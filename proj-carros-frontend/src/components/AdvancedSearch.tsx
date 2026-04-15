@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,7 @@ export default function AdvancedSearch() {
   const [models, setModels] = useState<string[]>([]);
   const [years, setYears] = useState<number[]>([]);
 
-  // Estado de Loading Global para bloquear interações
+  // Estado de Loading Global para bloquear interaÃ§Ãµes
   const [loadingCount, setLoadingCount] = useState(0);
   const isLoading = loadingCount > 0;
 
@@ -33,7 +33,7 @@ export default function AdvancedSearch() {
 
   // 1. Carrega Marcas (Depende do Tipo)
   useEffect(() => {
-    // Resetar seleções dependentes
+    // Resetar seleÃ§Ãµes dependentes
     setSelectedBrand("");
     setSelectedModel("");
 
@@ -56,7 +56,7 @@ export default function AdvancedSearch() {
     if (selectedType) params.append("type", selectedType);
     if (selectedBrand) params.append("brand", selectedBrand);
 
-    // Só busca modelos se houver marca selecionada
+    // SÃ³ busca modelos se houver marca selecionada
     if (selectedBrand) {
         setLoadingCount(prev => prev + 1);
         api.get(`/vehicles/filters/models?${params.toString()}`)
@@ -101,7 +101,7 @@ export default function AdvancedSearch() {
   };
 
   const inputClass =
-    "rounded-lg border border-white/20 bg-white/60 backdrop-blur-sm p-2 text-black font-medium shadow-sm hover:bg-white/80 transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+    "rounded-lg border border-white/20 bg-white/60 backdrop-blur-sm p-2 text-black font-medium shadow-sm hover:bg-white/80 transition-all focus:outline-none focus:ring-2 focus:ring-red-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
   return (
     <section className="py-12 my-[-60px]">
@@ -114,14 +114,14 @@ export default function AdvancedSearch() {
           {isLoading && (
             <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-[2px] rounded-2xl transition-all">
                 <div className="flex flex-col items-center gap-2 bg-white p-4 rounded-xl shadow-lg border border-gray-100 animate-in fade-in zoom-in duration-200">
-                    <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                    <Loader2 className="h-6 w-6 animate-spin text-red-600" />
                     <span className="text-xs font-semibold text-gray-500">Atualizando filtros...</span>
                 </div>
             </div>
           )}
 
-          <h2 className="text-3xl font-extrabold text-center text-blue-950 uppercase mb-8 tracking-wide">
-            Encontre seu veículo
+          <h2 className="text-3xl font-extrabold text-center text-red-950 uppercase mb-8 tracking-wide">
+            Encontre seu veÃ­culo
           </h2>
 
           <form onSubmit={handleSearch} className="space-y-8">
@@ -132,8 +132,8 @@ export default function AdvancedSearch() {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Digite marca, modelo ou versão..."
-                className="w-full rounded-xl bg-white/80 border border-white/30 backdrop-blur-md p-4 pl-12 text-lg text-black placeholder-gray-700 shadow-md focus:ring-2 focus:ring-blue-700 transition-all"
+                placeholder="Digite marca, modelo ou versÃ£o..."
+                className="w-full rounded-xl bg-white/80 border border-white/30 backdrop-blur-md p-4 pl-12 text-lg text-black placeholder-gray-700 shadow-md focus:ring-2 focus:ring-red-700 transition-all"
               />
 
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-700" />
@@ -180,21 +180,21 @@ export default function AdvancedSearch() {
               </select>
 
               <select className={inputClass} value={selectedMaxYear} onChange={(e) => setSelectedMaxYear(e.target.value)}>
-                <option value="">Ano Até</option>
+                <option value="">Ano AtÃ©</option>
                 {years.map((y) => (
                   <option key={y}>{y}</option>
                 ))}
               </select>
 
               <select className={inputClass} value={selectedMinPrice} onChange={(e) => setSelectedMinPrice(e.target.value)}>
-                <option value="">R$ Mín</option>
+                <option value="">R$ MÃ­n</option>
                 {priceRanges.map((p) => (
                   <option key={p}>R$ {p.toLocaleString("pt-BR")}</option>
                 ))}
               </select>
 
               <select className={inputClass} value={selectedMaxPrice} onChange={(e) => setSelectedMaxPrice(e.target.value)}>
-                <option value="">R$ Máx</option>
+                <option value="">R$ MÃ¡x</option>
                 {priceRanges.map((p) => (
                   <option key={p}>R$ {p.toLocaleString("pt-BR")}</option>
                 ))}
@@ -249,21 +249,21 @@ export default function AdvancedSearch() {
                   </select>
 
                   <select className={inputClass} value={selectedMaxYear} onChange={(e) => setSelectedMaxYear(e.target.value)}>
-                    <option value="">Ano Até</option>
+                    <option value="">Ano AtÃ©</option>
                     {years.map((y) => (
                       <option key={y}>{y}</option>
                     ))}
                   </select>
 
                   <select className={inputClass} value={selectedMinPrice} onChange={(e) => setSelectedMinPrice(e.target.value)}>
-                    <option value="">R$ Mín</option>
+                    <option value="">R$ MÃ­n</option>
                     {priceRanges.map((p) => (
                       <option key={p}>R$ {p.toLocaleString("pt-BR")}</option>
                     ))}
                   </select>
 
                   <select className={inputClass} value={selectedMaxPrice} onChange={(e) => setSelectedMaxPrice(e.target.value)}>
-                    <option value="">R$ Máx</option>
+                    <option value="">R$ MÃ¡x</option>
                     {priceRanges.map((p) => (
                       <option key={p}>R$ {p.toLocaleString("pt-BR")}</option>
                     ))}
@@ -272,12 +272,12 @@ export default function AdvancedSearch() {
               )}
             </div>
 
-            {/* Botão Buscar */}
+            {/* BotÃ£o Buscar */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-xl bg-blue-700 px-6 py-4 text-lg font-bold text-white shadow-xl 
-              hover:bg-blue-800 transition-all hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-red-700 px-6 py-4 text-lg font-bold text-white shadow-xl 
+              hover:bg-red-800 transition-all hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
@@ -287,7 +287,7 @@ export default function AdvancedSearch() {
               ) : (
                 <>
                     <Search size={22} />
-                    Buscar Veículos
+                    Buscar VeÃ­culos
                 </>
               )}
             </button>

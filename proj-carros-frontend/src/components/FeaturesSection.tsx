@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ShieldCheck, Banknote, Car, Trophy, ArrowRight, Key } from "lucide-react";
 import Link from "next/link";
@@ -8,16 +8,16 @@ export default function FeaturesSection() {
     <section className="py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-4">
         
-        {/* Cabeçalho Centralizado */}
+        {/* CabeÃ§alho Centralizado */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-blue-600 font-bold tracking-widest uppercase text-sm mb-3">
-            Experiência Premium
+          <h2 className="text-red-600 font-bold tracking-widest uppercase text-sm mb-3">
+            ExperiÃªncia Premium
           </h2>
           <h3 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-            Muito mais que uma concessionária.
+            Muito mais que uma concessionÃ¡ria.
           </h3>
           <p className="mt-4 text-gray-600 text-lg">
-            Há mais de 25 anos entregando qualidade e realizando sonhos com segurança total.
+            HÃ¡ mais de 25 anos entregando qualidade e realizando sonhos com seguranÃ§a total.
           </p>
         </div>
 
@@ -27,12 +27,12 @@ export default function FeaturesSection() {
           {/* Coluna Esquerda - Cards */}
           <div className="space-y-6">
             <div className="group p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-red-600 group-hover:text-white transition-colors">
                     <ShieldCheck size={24} />
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-2">Garantia Total</h4>
                 <p className="text-sm text-gray-600">
-                    Veículos periciados com laudo cautelar aprovado. Transparência total no histórico de cada unidade.
+                    VeÃ­culos periciados com laudo cautelar aprovado. TransparÃªncia total no histÃ³rico de cada unidade.
                 </p>
             </div>
 
@@ -55,10 +55,10 @@ export default function FeaturesSection() {
                alt="Carro Esportivo em destaque na loja" 
                className="w-full h-full object-cover"
              />
-             <div className="absolute inset-0 bg-gradient-to-t from-blue-950/80 via-transparent to-transparent flex flex-col justify-end p-8 text-center">
+             <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-transparent to-transparent flex flex-col justify-end p-8 text-center">
                 <p className="text-white font-bold text-xl">Estoque Selecionado</p>
-                <Link href="/estoque" className="text-blue-200 text-sm hover:text-white mt-1 inline-flex items-center justify-center gap-1">
-                    Ver todos os veículos <ArrowRight size={14} />
+                <Link href="/estoque" className="text-red-200 text-sm hover:text-white mt-1 inline-flex items-center justify-center gap-1">
+                    Ver todos os veÃ­culos <ArrowRight size={14} />
                 </Link>
              </div>
           </div>
@@ -69,9 +69,9 @@ export default function FeaturesSection() {
                 <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
                     <Car size={24} />
                 </div>
-                <h4 className="text-xl font-bold text-gray-900 mb-2">Melhor Avaliação</h4>
+                <h4 className="text-xl font-bold text-gray-900 mb-2">Melhor AvaliaÃ§Ã£o</h4>
                 <p className="text-sm text-gray-600">
-                    Valorizamos seu usado na troca. Avaliação justa e rápida para você sair de carro novo.
+                    Valorizamos seu usado na troca. AvaliaÃ§Ã£o justa e rÃ¡pida para vocÃª sair de carro novo.
                 </p>
             </div>
 
@@ -79,31 +79,31 @@ export default function FeaturesSection() {
                 <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition-colors">
                     <Key size={24} />
                 </div>
-                <h4 className="text-xl font-bold text-gray-900 mb-2">Pós-Venda</h4>
+                <h4 className="text-xl font-bold text-gray-900 mb-2">PÃ³s-Venda</h4>
                 <p className="text-sm text-gray-600">
-                    Nosso compromisso continua após a entrega das chaves. Suporte completo para sua tranquilidade.
+                    Nosso compromisso continua apÃ³s a entrega das chaves. Suporte completo para sua tranquilidade.
                 </p>
             </div>
           </div>
 
         </div>
 
-        {/* Barra de Estatísticas (Autoridade) */}
+        {/* Barra de EstatÃ­sticas (Autoridade) */}
         <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-gray-100 pt-12">
             <div className="text-center">
-                <p className="text-4xl font-extrabold text-blue-600 mb-1">25+</p>
-                <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Anos de História</p>
+                <p className="text-4xl font-extrabold text-red-600 mb-1">25+</p>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Anos de HistÃ³ria</p>
             </div>
             <div className="text-center">
-                <p className="text-4xl font-extrabold text-blue-600 mb-1">5k+</p>
+                <p className="text-4xl font-extrabold text-red-600 mb-1">5k+</p>
                 <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Carros Vendidos</p>
             </div>
              <div className="text-center">
-                <p className="text-4xl font-extrabold text-blue-600 mb-1">100%</p>
+                <p className="text-4xl font-extrabold text-red-600 mb-1">100%</p>
                 <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Laudo Aprovado</p>
             </div>
              <div className="text-center">
-                <p className="text-4xl font-extrabold text-blue-600 mb-1">4.9</p>
+                <p className="text-4xl font-extrabold text-red-600 mb-1">4.9</p>
                 <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Estrelas no Google</p>
             </div>
         </div>

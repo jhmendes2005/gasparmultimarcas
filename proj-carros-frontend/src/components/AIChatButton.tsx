@@ -15,7 +15,7 @@ export default function AIChatButton() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Olá! Sou o assistente virtual da Bom Jesus. Posso te ajudar a encontrar o carro ideal no nosso estoque?',
+      text: 'Olá! Sou o assistente virtual da Gaspar Multimarcas. Posso te ajudar a encontrar o carro ideal no nosso estoque?',
       sender: 'bot',
       timestamp: new Date()
     }
@@ -119,13 +119,13 @@ export default function AIChatButton() {
         <div className="hidden md:flex fixed bottom-40 right-6 z-50 w-[90vw] max-w-[380px] rounded-2xl bg-white shadow-2xl border border-gray-200 flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 h-[500px] max-h-[60vh]">
           
           {/* Header */}
-          <div className="bg-blue-600 p-4 text-white flex items-center gap-3 shadow-sm">
+          <div className="bg-red-700 p-4 text-white flex items-center gap-3 shadow-sm">
             <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
                 <Sparkles size={20} className="text-yellow-300" />
             </div>
             <div>
                 <h3 className="font-bold text-sm md:text-base">Assistente Virtual</h3>
-                <p className="text-xs text-blue-100 flex items-center gap-1.5">
+                <p className="text-xs text-red-100 flex items-center gap-1.5">
                     <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_5px_#4ade80]"/> Online agora
                 </p>
             </div>
@@ -137,7 +137,7 @@ export default function AIChatButton() {
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] rounded-2xl p-3 text-sm leading-relaxed shadow-sm ${
                   msg.sender === 'user' 
-                    ? 'bg-blue-600 text-white rounded-br-none' 
+                    ? 'bg-red-700 text-white rounded-br-none' 
                     : 'bg-white text-gray-800 border border-gray-100 rounded-bl-none'
                 }`}>
                   {msg.text}
@@ -164,12 +164,12 @@ export default function AIChatButton() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Pergunte sobre um carro..." 
-              className="flex-1 bg-gray-100 text-gray-900 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="flex-1 bg-gray-100 text-gray-900 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all"
             />
             <button 
                 type="submit"
                 disabled={isLoading || !inputValue.trim()}
-                className="bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm hover:shadow-md"
+                className="bg-red-700 text-white p-2.5 rounded-full hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm hover:shadow-md"
             >
                 <Send size={18} className={inputValue.trim() ? 'ml-0.5' : ''} />
             </button>

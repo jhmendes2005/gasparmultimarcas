@@ -10,10 +10,10 @@ export default function Privacidade() {
     <div className="min-h-screen bg-gray-50 pb-20">
       
       {/* Header / Hero Simplificado */}
-      <div className="bg-blue-950 py-16 text-center text-white">
+      <div className="bg-black py-16 text-center text-white">
         <div className="container mx-auto px-4">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Política de Privacidade</h1>
-            <p className="text-blue-200 text-sm">
+            <p className="text-red-200 text-sm">
                 Última atualização: {lastUpdate}
             </p>
         </div>
@@ -24,12 +24,12 @@ export default function Privacidade() {
           
           {/* Introdução */}
           <section>
-            <div className="flex items-center gap-3 mb-4 text-blue-800">
+            <div className="flex items-center gap-3 mb-4 text-red-800">
                 <Lock size={28} />
                 <h2 className="text-2xl font-bold">1. Nosso Compromisso</h2>
             </div>
             <p className="text-gray-600 leading-relaxed text-justify">
-              A <strong>Bom Jesus Automóveis</strong> respeita a sua privacidade e está comprometida em proteger os dados pessoais que você compartilha conosco. Esta política descreve como coletamos, utilizamos e protegemos suas informações ao visitar nosso site ou utilizar nossos serviços.
+              A <strong>Gaspar Multimarcas</strong> respeita a sua privacidade e está comprometida em proteger os dados pessoais que você compartilha conosco. Esta política descreve como coletamos, utilizamos e protegemos suas informações ao visitar nosso site ou utilizar nossos serviços.
             </p>
           </section>
 
@@ -37,7 +37,7 @@ export default function Privacidade() {
 
           {/* Coleta de Dados */}
           <section>
-            <div className="flex items-center gap-3 mb-4 text-blue-800">
+            <div className="flex items-center gap-3 mb-4 text-red-800">
                 <Database size={28} />
                 <h2 className="text-2xl font-bold">2. Informações que Coletamos</h2>
             </div>
@@ -45,7 +45,7 @@ export default function Privacidade() {
               <p>
                 Coletamos informações para fornecer uma melhor experiência de atendimento. Os tipos de dados incluem:
               </p>
-              <ul className="list-disc pl-5 space-y-2 marker:text-blue-500">
+              <ul className="list-disc pl-5 space-y-2 marker:text-red-500">
                 <li>
                   <strong>Dados Fornecidos por Você:</strong> Nome, telefone, e-mail e mensagens enviadas através dos nossos formulários de contato ou botões de WhatsApp.
                 </li>
@@ -60,14 +60,14 @@ export default function Privacidade() {
 
           {/* Uso das Informações */}
           <section>
-            <div className="flex items-center gap-3 mb-4 text-blue-800">
+            <div className="flex items-center gap-3 mb-4 text-red-800">
                 <Eye size={28} />
                 <h2 className="text-2xl font-bold">3. Como Usamos seus Dados</h2>
             </div>
             <p className="text-gray-600 leading-relaxed text-justify mb-4">
               As informações coletadas são utilizadas exclusivamente para:
             </p>
-            <ul className="list-disc pl-5 space-y-2 marker:text-blue-500 text-gray-600 text-justify">
+            <ul className="list-disc pl-5 space-y-2 marker:text-red-500 text-gray-600 text-justify">
               <li>Responder às suas solicitações de contato e propostas comerciais.</li>
               <li>Melhorar a funcionalidade e o conteúdo do nosso site.</li>
               <li>Enviar comunicações sobre novos veículos ou promoções (caso você tenha optado por receber).</li>
@@ -79,7 +79,7 @@ export default function Privacidade() {
 
           {/* Cookies */}
           <section>
-            <div className="flex items-center gap-3 mb-4 text-blue-800">
+            <div className="flex items-center gap-3 mb-4 text-red-800">
                 <Cookie size={28} />
                 <h2 className="text-2xl font-bold">4. Cookies e Tecnologias</h2>
             </div>
@@ -92,7 +92,7 @@ export default function Privacidade() {
 
           {/* Direitos do Usuário */}
           <section>
-            <div className="flex items-center gap-3 mb-4 text-blue-800">
+            <div className="flex items-center gap-3 mb-4 text-red-800">
                 <UserCheck size={28} />
                 <h2 className="text-2xl font-bold">5. Seus Direitos (LGPD)</h2>
             </div>
@@ -104,18 +104,18 @@ export default function Privacidade() {
           <hr className="border-gray-100" />
 
           {/* Contato */}
-          <section className="bg-blue-50 p-6 rounded-xl border border-blue-100">
-            <div className="flex items-center gap-3 mb-3 text-blue-800">
+          <section className="bg-red-50 p-6 rounded-xl border border-red-100">
+            <div className="flex items-center gap-3 mb-3 text-red-800">
                 <Phone size={24} />
                 <h2 className="text-xl font-bold">Fale com o Encarregado de Dados</h2>
             </div>
             <p className="text-gray-700 mb-4">
-              Se tiver dúvidas sobre como tratamos seus dados, entre em contato pelo e-mail abaixo.
+              Se tiver dúvidas sobre como tratamos seus dados, fale com nossa equipe pelos canais oficiais.
             </p>
             <div className="flex flex-wrap gap-4">
-               <a href="mailto:privacidade@bomjesusautomoveis.com" className="text-sm font-bold text-blue-600 hover:underline">
-                 privacidade@bomjesusautomoveis.com
-               </a>
+              <Link href="/contato" className="text-sm font-bold text-red-700 hover:underline">
+                Ir para página de Contato →
+              </Link>
             </div>
           </section>
 

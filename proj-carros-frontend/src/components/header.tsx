@@ -56,18 +56,21 @@ export default function Header() {
   }
   
   return (
-    <header className="relative sticky top-0 z-50 w-full bg-white shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-md border-b border-red-100">
       {/* Container Principal */}
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 p-4">
         
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 items-center" onClick={clearAndCloseMenu}>
-          <img 
-            src="/bomjesuslogo.png"
-            alt="Bom Jesus Automóveis Logo"
-            // 2. Tamanho ajustado (10 = 40px mobile, 12 = 48px desktop)
-            className="w-12 md:h-12" 
-          />
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 rounded-xl bg-red-700 text-white font-extrabold flex items-center justify-center shadow-sm">
+              GM
+            </div>
+            <div className="leading-tight hidden sm:block">
+              <p className="text-sm md:text-base font-extrabold text-gray-900">Gaspar Multimarcas</p>
+              <p className="text-xs text-gray-500">Seminovos e 0km com Procedência</p>
+            </div>
+          </div>
         </Link>
 
         {/* 3. WRAPPER PARA DESKTOP */}
@@ -87,7 +90,7 @@ export default function Header() {
               type="text"
               name="q"
               placeholder="Buscar por marca, modelo ou ano..."
-              className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 shadow-sm text-black focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 shadow-sm text-black focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onBlur={() => setTimeout(() => setResults([]), 150)}
@@ -125,7 +128,7 @@ export default function Header() {
                       <Link
                         href={`/estoque?q=${searchTerm}`}
                         // 4. CORRIGIDO: Classes preenchidas
-                        className="flex items-center gap-3 bg-gray-50 px-4 py-3 text-sm font-semibold text-blue-600 transition-colors hover:bg-gray-100"
+                        className="flex items-center gap-3 bg-gray-50 px-4 py-3 text-sm font-semibold text-red-700 transition-colors hover:bg-gray-100"
                         onClick={clearAndCloseMenu}
                       >
                         <Search className="h-4 w-4" />
@@ -143,19 +146,19 @@ export default function Header() {
             {/* 5. CORRIGIDO: Links preenchidos */}
             <ul className="flex flex-shrink-0 items-center gap-6 text-sm font-medium text-gray-600">
               <li>
-                <Link href="/estoque" className="transition-colors hover:text-blue-600">
+                <Link href="/estoque" className="transition-colors hover:text-red-700">
                   Estoque
                 </Link>
               </li>
               <li>
-                <Link href="/sobre" className="transition-colors hover:text-blue-600">
+                <Link href="/sobre" className="transition-colors hover:text-red-700">
                   Sobre Nós
                 </Link>
               </li>
               <li>
                 <Link 
                   href="/contato" 
-                  className="whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-white shadow-sm transition-colors hover:bg-blue-700"
+                  className="whitespace-nowrap rounded-lg bg-red-700 px-4 py-2 text-white shadow-sm transition-colors hover:bg-red-800"
                 >
                   Contato
                 </Link>
@@ -227,7 +230,7 @@ export default function Header() {
                       <li key="search-all">
                         <Link
                           href={`/estoque?q=${searchTerm}`}
-                          className="flex items-center gap-3 bg-gray-50 px-4 py-3 text-sm font-semibold text-blue-600 transition-colors hover:bg-gray-100"
+                          className="flex items-center gap-3 bg-gray-50 px-4 py-3 text-sm font-semibold text-red-700 transition-colors hover:bg-gray-100"
                           onClick={clearAndCloseMenu}
                         >
                           <Search className="h-4 w-4" />
@@ -264,7 +267,7 @@ export default function Header() {
                 <li>
                   <Link 
                     href="/contato" 
-                    className="mt-2 block rounded-lg bg-blue-600 px-4 py-3 text-center text-base font-semibold text-white shadow-sm hover:bg-blue-700"
+                    className="mt-2 block rounded-lg bg-red-700 px-4 py-3 text-center text-base font-semibold text-white shadow-sm hover:bg-red-800"
                     onClick={clearAndCloseMenu}
                   >
                     Contato

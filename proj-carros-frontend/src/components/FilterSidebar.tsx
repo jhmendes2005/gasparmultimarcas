@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -23,12 +23,12 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    // Estados de Opções (Carregados da API)
+    // Estados de OpÃ§Ãµes (Carregados da API)
     const [marcas, setMarcas] = useState<string[]>([]);
     const [modelos, setModelos] = useState<string[]>([]);
     const [anos, setAnos] = useState<number[]>([]);
 
-    // Estado de Loading Global para bloquear interações
+    // Estado de Loading Global para bloquear interaÃ§Ãµes
     const [loadingCount, setLoadingCount] = useState(0);
     const isLoading = loadingCount > 0;
 
@@ -44,7 +44,7 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
         sort: ""
     });
 
-    // 1. Sincronizar estado local com a URL na montagem ou navegação
+    // 1. Sincronizar estado local com a URL na montagem ou navegaÃ§Ã£o
     useEffect(() => {
         const currentFilters = {
             tipo: searchParams.get("tipo") || "",
@@ -104,7 +104,7 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
     }, [filters.marca, filters.modelo, filters.tipo]);
 
 
-    // Handler de Mudança (Com Reset Lógico)
+    // Handler de MudanÃ§a (Com Reset LÃ³gico)
     const handleFilterChange = (field: string, value: string) => {
         setFilters(prev => {
             const next = { ...prev, [field]: value };
@@ -126,7 +126,7 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
     const applyFilters = () => {
         const params = new URLSearchParams();
 
-        // Mantém a busca textual se existir
+        // MantÃ©m a busca textual se existir
         const q = searchParams.get("q");
         if (q) params.set("q", q);
 
@@ -161,27 +161,27 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
             {isLoading && (
                 <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[1px] rounded-lg transition-all">
                     <div className="flex flex-col items-center gap-2 bg-white p-4 rounded-xl shadow-lg border border-gray-100">
-                        <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                        <Loader2 className="h-6 w-6 animate-spin text-red-600" />
                         <span className="text-xs font-semibold text-gray-500">Atualizando...</span>
                     </div>
                 </div>
             )}
 
             <div className="space-y-6">
-                {/* Ordenação */}
+                {/* OrdenaÃ§Ã£o */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
-                        <ArrowUpDown size={14} className="text-blue-600" /> Ordenar por
+                        <ArrowUpDown size={14} className="text-red-600" /> Ordenar por
                     </label>
                     <div className="relative">
                         <select 
-                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-blue-500 appearance-none"
+                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-red-500 appearance-none"
                             value={filters.sort}
                             onChange={(e) => handleFilterChange('sort', e.target.value)}
                         >
                             <option value="">Mais Recentes</option>
-                            <option value="price_asc">Menor Preço</option>
-                            <option value="price_desc">Maior Preço</option>
+                            <option value="price_asc">Menor PreÃ§o</option>
+                            <option value="price_desc">Maior PreÃ§o</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-3.5 h-4 w-4 text-gray-400 pointer-events-none" />
                     </div>
@@ -194,7 +194,7 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
                     <div className="relative">
                         <select 
-                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-blue-500 appearance-none"
+                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-red-500 appearance-none"
                             value={filters.tipo}
                             onChange={(e) => handleFilterChange('tipo', e.target.value)}
                         >
@@ -210,7 +210,7 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
                     <div className="relative">
                         <select 
-                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-blue-500 appearance-none disabled:bg-gray-100 disabled:text-gray-400"
+                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-red-500 appearance-none disabled:bg-gray-100 disabled:text-gray-400"
                             value={filters.marca}
                             onChange={(e) => handleFilterChange('marca', e.target.value)}
                         >
@@ -226,7 +226,7 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
                     <div className="relative">
                         <select 
-                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-blue-500 appearance-none disabled:bg-gray-100 disabled:text-gray-400"
+                            className="w-full rounded-lg border-gray-300 border p-2.5 text-gray-700 bg-white focus:ring-2 focus:ring-red-500 appearance-none disabled:bg-gray-100 disabled:text-gray-400"
                             value={filters.modelo}
                             onChange={(e) => handleFilterChange('modelo', e.target.value)}
                             disabled={!filters.marca}
@@ -255,39 +255,39 @@ export default function VehicleFilter({ onClose }: VehicleFilterProps) {
                             value={filters.ano_max}
                             onChange={(e) => handleFilterChange('ano_max', e.target.value)}
                         >
-                            <option value="">Até</option>
+                            <option value="">AtÃ©</option>
                             {anos.map(a => <option key={`max-${a}`} value={a}>{a}</option>)}
                         </select>
                     </div>
                 </div>
 
-                {/* Preço */}
+                {/* PreÃ§o */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">PreÃ§o (R$)</label>
                     <div className="flex gap-2 items-center">
                         <input 
                             type="number" 
-                            placeholder="Mín"
-                            className="w-full rounded-lg border-gray-300 border p-2 text-gray-700 focus:ring-2 focus:ring-blue-500"
+                            placeholder="MÃ­n"
+                            className="w-full rounded-lg border-gray-300 border p-2 text-gray-700 focus:ring-2 focus:ring-red-500"
                             value={filters.preco_min}
                             onChange={(e) => handleFilterChange('preco_min', e.target.value)}
                         />
                         <span className="text-gray-400">-</span>
                         <input 
                             type="number" 
-                            placeholder="Máx"
-                            className="w-full rounded-lg border-gray-300 border p-2 text-gray-700 focus:ring-2 focus:ring-blue-500"
+                            placeholder="MÃ¡x"
+                            className="w-full rounded-lg border-gray-300 border p-2 text-gray-700 focus:ring-2 focus:ring-red-500"
                             value={filters.preco_max}
                             onChange={(e) => handleFilterChange('preco_max', e.target.value)}
                         />
                     </div>
                 </div>
 
-                {/* Botões de Ação */}
+                {/* BotÃµes de AÃ§Ã£o */}
                 <div className="pt-4 flex flex-col gap-2">
                     <button 
                         onClick={applyFilters}
-                        className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                        className="w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition-colors shadow-sm"
                     >
                         Aplicar Filtros
                     </button>

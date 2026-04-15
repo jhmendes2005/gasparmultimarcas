@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -20,9 +20,9 @@ export default function Estoque() {
     // Estado para controlar a abertura do filtro no Mobile
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-    // Buscar Veículos sempre que a URL (filtros) mudar
+    // Buscar VeÃ­culos sempre que a URL (filtros) mudar
     useEffect(() => {
-        // 2. Garante que o loading apareça ao trocar filtros
+        // 2. Garante que o loading apareÃ§a ao trocar filtros
         setIsLoading(true);
 
         const params = {
@@ -32,14 +32,14 @@ export default function Estoque() {
 
         api.get("/vehicles", { params })
             .then(res => setVeiculos(res.data))
-            .catch(err => console.error("Erro ao buscar veículos:", err))
+            .catch(err => console.error("Erro ao buscar veÃ­culos:", err))
             .finally(() => {
-                // 3. Remove o loading quando a requisição terminar (com sucesso ou erro)
+                // 3. Remove o loading quando a requisiÃ§Ã£o terminar (com sucesso ou erro)
                 setIsLoading(false);
             });
     }, [searchParams]);
 
-    // Função auxiliar para limpar filtros (usada no estado vazio)
+    // FunÃ§Ã£o auxiliar para limpar filtros (usada no estado vazio)
     const clearFilters = () => {
          router.push("/estoque");
     };
@@ -49,17 +49,17 @@ export default function Estoque() {
             <Hero />
 
             <div className="container mx-auto px-4 py-8">
-                {/* Cabeçalho da Seção + Botão Mobile */}
+                {/* CabeÃ§alho da SeÃ§Ã£o + BotÃ£o Mobile */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <h1 className="text-3xl font-bold text-gray-800">Nosso Estoque</h1>
                     
-                    {/* Botão "Filtrar" (Só aparece no Mobile) */}
+                    {/* BotÃ£o "Filtrar" (SÃ³ aparece no Mobile) */}
                     <button 
                         onClick={() => setIsMobileFilterOpen(true)}
                         className="md:hidden w-full flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium shadow-sm active:bg-gray-50 hover:bg-gray-50 transition-colors"
                     >
                         <Filter size={20} />
-                        Filtrar Veículos
+                        Filtrar VeÃ­culos
                     </button>
                 </div>
 
@@ -68,7 +68,7 @@ export default function Estoque() {
                     {/* --- SIDEBAR DESKTOP --- */}
                     <aside className="hidden md:block w-72 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
                         <div className="flex items-center gap-2 mb-6 text-gray-800 border-b border-gray-100 pb-4">
-                            <Filter size={20} className="text-blue-600" />
+                            <Filter size={20} className="text-red-600" />
                             <h2 className="font-bold text-lg">Filtrar</h2>
                         </div>
                         {/* Desabilita visualmente o filtro enquanto carrega */}
@@ -82,7 +82,7 @@ export default function Estoque() {
                         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4 md:hidden animate-in fade-in duration-200">
                             <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 duration-300">
                                 <div className="flex justify-between items-center mb-6">
-                                    <h2 className="text-xl font-bold text-gray-800">Filtrar Veículos</h2>
+                                    <h2 className="text-xl font-bold text-gray-800">Filtrar VeÃ­culos</h2>
                                     <button 
                                         onClick={() => setIsMobileFilterOpen(false)} 
                                         className="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition-colors"
@@ -95,10 +95,10 @@ export default function Estoque() {
                         </div>
                     )}
 
-                    {/* --- CONTEÚDO PRINCIPAL (GRID) --- */}
+                    {/* --- CONTEÃšDO PRINCIPAL (GRID) --- */}
                     <div className="flex-1 w-full">
                         
-                        {/* 4. VERIFICAÇÃO DE LOADING */}
+                        {/* 4. VERIFICAÃ‡ÃƒO DE LOADING */}
                         {isLoading ? (
                             // --- CARRO ANIMADO (LOADER) ---
                             <div className="flex items-center justify-center min-h-[400px] w-full">
@@ -140,19 +140,19 @@ export default function Estoque() {
                                 </svg>
                             </div>
                         ) : veiculos.length === 0 ? (
-                            // 5. Estado Vazio (Só aparece se NÃO estiver carregando)
+                            // 5. Estado Vazio (SÃ³ aparece se NÃƒO estiver carregando)
                             <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[400px]">
                                 <div className="text-gray-300 mb-4">
                                     <SearchIconFallback />
                                 </div>
-                                <p className="text-gray-500 text-lg font-medium">Nenhum veículo encontrado.</p>
+                                <p className="text-gray-500 text-lg font-medium">Nenhum veÃ­culo encontrado.</p>
                                 <p className="text-sm text-gray-400">Tente ajustar seus filtros ou termos de busca.</p>
-                                <button onClick={clearFilters} className="mt-4 text-blue-600 font-medium hover:underline">
+                                <button onClick={clearFilters} className="mt-4 text-red-600 font-medium hover:underline">
                                     Limpar todos os filtros
                                 </button>
                             </div>
                         ) : (
-                            // 6. Grid de Veículos Real (Quando tem dados)
+                            // 6. Grid de VeÃ­culos Real (Quando tem dados)
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {veiculos.map((v: any) => (
                                     <div 
@@ -162,7 +162,7 @@ export default function Estoque() {
                                         {/* Imagem */}
                                         <div className="relative h-56 overflow-hidden bg-gray-100">
                                             {v.destaque && (
-                                                <div className="absolute top-4 left-4 z-10 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md uppercase tracking-wide">
+                                                <div className="absolute top-4 left-4 z-10 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md uppercase tracking-wide">
                                                     <Star size={10} fill="currentColor" /> Destaque
                                                 </div>
                                             )}
@@ -176,7 +176,7 @@ export default function Estoque() {
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                                                        <div className="text-4xl mb-2">📷</div>
+                                                        <div className="text-4xl mb-2">ðŸ“·</div>
                                                         <span className="text-sm">Sem foto</span>
                                                     </div>
                                                 )}
@@ -185,14 +185,14 @@ export default function Estoque() {
                                             <Link href={`/veiculo/${v.slug}`} className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
                                         </div>
 
-                                        {/* Conteúdo do Card */}
+                                        {/* ConteÃºdo do Card */}
                                         <div className="p-5 flex flex-col flex-1">
-                                            <h3 className="text-blue-600 text-xs font-bold uppercase tracking-wider mb-2">
+                                            <h3 className="text-red-600 text-xs font-bold uppercase tracking-wider mb-2">
                                                 {v.marca}
                                             </h3>
 
                                             <Link href={`/veiculo/${v.slug}`} className="block">
-                                                <h2 className="text-lg font-bold text-gray-900 leading-tight mb-1 group-hover:text-blue-700 transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem]">
+                                                <h2 className="text-lg font-bold text-gray-900 leading-tight mb-1 group-hover:text-red-700 transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem]">
                                                     {v.modelo}
                                                 </h2>
                                             </Link>
@@ -202,16 +202,16 @@ export default function Estoque() {
 
                                             <div className="grid grid-cols-2 gap-y-2 gap-x-2 mb-5">
                                                 <div className="flex items-center gap-2 text-xs text-gray-600">
-                                                    <Calendar size={14} className="text-blue-500 flex-shrink-0" />
+                                                    <Calendar size={14} className="text-red-500 flex-shrink-0" />
                                                     <span>{v.anoModelo}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2 text-xs text-gray-600">
-                                                    <Gauge size={14} className="text-blue-500 flex-shrink-0" />
+                                                    <Gauge size={14} className="text-red-500 flex-shrink-0" />
                                                     <span className="truncate">{Number(v.quilometragem).toLocaleString('pt-BR')} km</span>
                                                 </div>
                                                 {v.combustivel && (
                                                     <div className="flex items-center gap-2 text-xs text-gray-600 col-span-2">
-                                                        <Fuel size={14} className="text-blue-500 flex-shrink-0" />
+                                                        <Fuel size={14} className="text-red-500 flex-shrink-0" />
                                                         <span className="truncate">{v.combustivel}</span>
                                                     </div>
                                                 )}
@@ -220,14 +220,14 @@ export default function Estoque() {
                                             <div className="border-t border-gray-100 mt-auto pt-4 flex items-center justify-between">
                                                 <div>
                                                     <p className="text-[10px] text-gray-400 font-semibold uppercase mb-0.5">Valor</p>
-                                                    <p className="text-xl font-bold text-blue-700">
+                                                    <p className="text-xl font-bold text-red-700">
                                                         {Number(v.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                                     </p>
                                                 </div>
                                                 
                                                 <Link 
                                                     href={`/veiculo/${v.slug}`}
-                                                    className="bg-blue-600 text-white w-10 h-10 rounded-full shadow-lg shadow-blue-100 hover:bg-blue-700 hover:shadow-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                                                    className="bg-red-600 text-white w-10 h-10 rounded-full shadow-lg shadow-red-100 hover:bg-red-700 hover:shadow-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
                                                 >
                                                     <ArrowRight size={18} />
                                                 </Link>

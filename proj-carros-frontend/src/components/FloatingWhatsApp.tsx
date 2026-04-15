@@ -31,7 +31,7 @@ export default function FloatingWhatsApp() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const yourWhatsappNumber = '5542984399009'; // Seu número atualizado
+    const yourWhatsappNumber = '5547996190693';
 
     const vehicleName = getVehicleNameFromPath();
     let message = `Olá, meu nome é ${name} (${phone}).`;

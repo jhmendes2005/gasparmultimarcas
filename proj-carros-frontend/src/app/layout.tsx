@@ -28,8 +28,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bom Jesus Automóveis - Veículos Novos e Seminovos",
-  description: "Qualidade e confiança na compra do seu próximo veículo.",
+  title: "Gaspar Multimarcas - Seminovos e 0km com Procedência",
+  description: "Gaspar Multimarcas: confiança, qualidade e credibilidade para você realizar o sonho do carro ideal.",
   icons: { icon: "/favicon.ico" } 
 };
 

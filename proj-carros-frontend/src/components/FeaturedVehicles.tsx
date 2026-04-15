@@ -1,7 +1,7 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { Gauge, Calendar, Star, ChevronsRight } from "lucide-react";
-import { api } from "@/src/lib/api"; // ⚙️ nova versão do cliente para SSR
+import { api } from "@/src/lib/api"; // âš™ï¸ nova versÃ£o do cliente para SSR
 
 // 1. Interface para os dados do card
 interface VehicleCardProps {
@@ -14,19 +14,19 @@ interface VehicleCardProps {
   fotos: string[];
 }
 
-// 2. Função de busca de dados (Server-side)
+// 2. FunÃ§Ã£o de busca de dados (Server-side)
 async function getFeaturedVehicles(count: number) {
   try {
     // Chama o backend via Axios (no servidor)
     const res = await api.get(`/vehicles/featured?count=${count}`);
     return res.data;
   } catch (error) {
-    console.error("❌ Falha ao buscar destaques:", error);
+    console.error("âŒ Falha ao buscar destaques:", error);
     return [];
   }
 }
 
-// 3. O Componente de Card (reutilizável)
+// 3. O Componente de Card (reutilizÃ¡vel)
 function VehicleCard({ vehicle }: { vehicle: VehicleCardProps }) {
   return (
     <Link
@@ -41,13 +41,13 @@ function VehicleCard({ vehicle }: { vehicle: VehicleCardProps }) {
           style={{ objectFit: "cover" }}
           className="transition-transform group-hover:scale-110"
         />
-        <span className="absolute top-2 left-2 z-20 bg-blue-800 text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center gap-1">
+        <span className="absolute top-2 left-2 z-20 bg-red-800 text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center gap-1">
           <Star size={14} className="text-white-300" />
           Novidade
         </span>
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-bold text-blue-800">
+        <h3 className="text-lg font-bold text-red-800">
           {vehicle.marca} {vehicle.modelo}
         </h3>
 
@@ -66,16 +66,16 @@ function VehicleCard({ vehicle }: { vehicle: VehicleCardProps }) {
           )}
         </div>
 
-        <p className="mt-4 text-2xl font-bold text-blue-600">
+        <p className="mt-4 text-2xl font-bold text-red-600">
           R${" "}
           {vehicle.preco.toLocaleString("pt-BR", {
             minimumFractionDigits: 2,
           })}
         </p>
         <button
-          className="mt-4 w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-800  
+          className="mt-4 w-full rounded-xl bg-gradient-to-r from-red-600 to-red-800  
                     text-white font-semibold py-2.5 shadow-md transition-all duration-300 
-                    hover:from-blue-800  hover:to-blue-600 hover:scale-[1.02] active:scale-95
+                    hover:from-red-800  hover:to-red-600 hover:scale-[1.02] active:scale-95
                     flex items-center justify-center gap-2"
         >
           Ver mais

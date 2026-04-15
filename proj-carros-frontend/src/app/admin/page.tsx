@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -58,15 +58,15 @@ const STANDARD_COLORS = [
     "Roxo",
 ];
 
-const TRANSMISSIONS = ["Manual", "Automático", "Automatizado", "CVT"];
+const TRANSMISSIONS = ["Manual", "AutomÃ¡tico", "Automatizado", "CVT"];
 
 const FUEL_TYPES = [
     "Gasolina",
     "Etanol",
     "Flex",
     "Diesel",
-    "Elétrico",
-    "Híbrido",
+    "ElÃ©trico",
+    "HÃ­brido",
     "GNV",
 ];
 
@@ -82,7 +82,7 @@ export default function AdminPage() {
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [stats, setStats] = useState({ views: 0, whatsapp: 0, shares: 0 });
   
-  // Configuração
+  // ConfiguraÃ§Ã£o
   const [configId, setConfigId] = useState<number | null>(null);
   const [syncUrl, setSyncUrl] = useState("");
   const [apiType, setApiType] = useState("ALTIMUS");
@@ -90,15 +90,15 @@ export default function AdminPage() {
   
   // UI States
   const [isSyncing, setIsSyncing] = useState(false);
-  const [progress, setProgress] = useState(0); // 🟢 Novo estado de progresso
+  const [progress, setProgress] = useState(0); // ðŸŸ¢ Novo estado de progresso
   const [isSaving, setIsSaving] = useState(false);
   const [syncResult, setSyncResult] = useState<any>(null);
   
-  // Seleção e Exclusão
+  // SeleÃ§Ã£o e ExclusÃ£o
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Modal de Edição
+  // Modal de EdiÃ§Ã£o
   const [editingVehicle, setEditingVehicle] = useState<any | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
     const [pendingImageFiles, setPendingImageFiles] = useState<File[]>([]);
@@ -178,7 +178,7 @@ export default function AdminPage() {
                 ),
             );
         } catch (error) {
-            alert("Erro ao remover imagem do veículo.");
+            alert("Erro ao remover imagem do veÃ­culo.");
         }
     }
 
@@ -227,7 +227,7 @@ export default function AdminPage() {
     router.push("/login");
   }
 
-  // --- FUNÇÕES DE SELEÇÃO ---
+  // --- FUNÃ‡Ã•ES DE SELEÃ‡ÃƒO ---
   const toggleSelectAll = () => {
       if (selectedIds.length === vehicles.length) {
           setSelectedIds([]);
@@ -244,19 +244,19 @@ export default function AdminPage() {
       }
   };
 
-  // --- FUNÇÕES DE EXCLUSÃO ---
+  // --- FUNÃ‡Ã•ES DE EXCLUSÃƒO ---
   async function handleDeleteSelected() {
       if (selectedIds.length === 0) return;
-      if (!confirm(`Tem certeza que deseja excluir ${selectedIds.length} veículos selecionados?`)) return;
+      if (!confirm(`Tem certeza que deseja excluir ${selectedIds.length} veÃ­culos selecionados?`)) return;
 
       setIsDeleting(true);
       try {
           await Promise.all(selectedIds.map(id => api.delete(`/vehicles/${id}`)));
           setVehicles(prev => prev.filter(v => !selectedIds.includes(v.id)));
           setSelectedIds([]);
-          alert("Veículos excluídos com sucesso!");
+          alert("VeÃ­culos excluÃ­dos com sucesso!");
       } catch (error) {
-          alert("Erro ao excluir alguns veículos.");
+          alert("Erro ao excluir alguns veÃ­culos.");
       } finally {
           setIsDeleting(false);
       }
@@ -264,7 +264,7 @@ export default function AdminPage() {
 
   async function handleDeleteAll() {
       if (vehicles.length === 0) return;
-      if (!confirm("PERIGO: Isso apagará TODOS os veículos do seu estoque. Tem certeza absoluta?")) return;
+      if (!confirm("PERIGO: Isso apagarÃ¡ TODOS os veÃ­culos do seu estoque. Tem certeza absoluta?")) return;
 
       setIsDeleting(true);
       try {
@@ -280,7 +280,7 @@ export default function AdminPage() {
       }
   }
 
-  // --- SINCRONIZAÇÃO COM BARRA DE PROGRESSO ---
+  // --- SINCRONIZAÃ‡ÃƒO COM BARRA DE PROGRESSO ---
   async function handleSync() {
     if (!syncUrl) return alert("Digite a URL da API de estoque.");
     
@@ -288,8 +288,8 @@ export default function AdminPage() {
     setSyncResult(null);
     setProgress(0); // Reinicia a barra
 
-    // 🟢 Simula o progresso visualmente (já que o backend não envia progresso em tempo real)
-    // Aumenta 10% a cada 800ms até chegar em 90% e espera
+    // ðŸŸ¢ Simula o progresso visualmente (jÃ¡ que o backend nÃ£o envia progresso em tempo real)
+    // Aumenta 10% a cada 800ms atÃ© chegar em 90% e espera
     const progressInterval = setInterval(() => {
         setProgress((prev) => {
             if (prev >= 90) return 90; // Trava em 90% esperando o backend
@@ -299,7 +299,7 @@ export default function AdminPage() {
 
     try {
       await handleSaveConfig(false); 
-      // Essa chamada demora porque o Backend está esperando o Webhook do n8n responder para cada carro
+      // Essa chamada demora porque o Backend estÃ¡ esperando o Webhook do n8n responder para cada carro
       const response = await api.post(`/vehicles/process?url=${encodeURIComponent(syncUrl)}&type=${apiType}`);
       
       // Quando o backend responde, completamos a barra
@@ -315,12 +315,12 @@ export default function AdminPage() {
       const msg = error.response?.data?.message || "Erro ao conectar.";
       setSyncResult({ success: false, message: msg });
     } finally {
-      // Pequeno delay para mostrar o 100% antes de habilitar o botão
+      // Pequeno delay para mostrar o 100% antes de habilitar o botÃ£o
       setTimeout(() => setIsSyncing(false), 500);
     }
   }
 
-  // --- CONFIGURAÇÃO ---
+  // --- CONFIGURAÃ‡ÃƒO ---
   async function handleSaveConfig(showAlert = true) {
     setIsSaving(true);
     try {
@@ -337,7 +337,7 @@ export default function AdminPage() {
             if(res.data?.id) setConfigId(res.data.id);
         }
         
-        if(showAlert) alert("Configurações salvas!");
+        if(showAlert) alert("ConfiguraÃ§Ãµes salvas!");
     } catch (error) {
         console.error("Erro config:", error);
         if(showAlert) alert("Erro ao salvar config.");
@@ -347,12 +347,12 @@ export default function AdminPage() {
   }
 
   async function handleDelete(id: number) {
-      if(!confirm("Tem certeza que deseja excluir este veículo?")) return;
+      if(!confirm("Tem certeza que deseja excluir este veÃ­culo?")) return;
       try {
           await api.delete(`/vehicles/${id}`);
           setVehicles(prev => prev.filter(v => v.id !== id));
       } catch (error) {
-          alert("Erro ao excluir veículo");
+          alert("Erro ao excluir veÃ­culo");
       }
   }
 
@@ -394,7 +394,7 @@ export default function AdminPage() {
           fetchVehicles();
           closeVehicleModal();
       } catch (error) {
-          alert("Erro ao salvar veículo.");
+          alert("Erro ao salvar veÃ­culo.");
       } finally {
           setIsUpdating(false);
       }
@@ -416,11 +416,11 @@ export default function AdminPage() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
         <div className="flex items-center gap-2">
-            <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">A</div>
+            <div className="h-8 w-8 bg-red-600 rounded-lg flex items-center justify-center text-white font-bold">A</div>
             <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>
         </div>
         <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">Olá, <strong>{user.nome}</strong></span>
+            <span className="text-sm text-gray-500">OlÃ¡, <strong>{user.nome}</strong></span>
             <button onClick={handleLogout} className="text-sm text-red-600 hover:text-red-800 font-medium">Sair</button>
         </div>
       </header>
@@ -432,12 +432,12 @@ export default function AdminPage() {
                 {[
                     { id: "dashboard", icon: BarChart3, label: "Dashboard" },
                     { id: "estoque", icon: Car, label: "Estoque" },
-                    { id: "config", icon: Settings, label: "Configurações" }
+                    { id: "config", icon: Settings, label: "ConfiguraÃ§Ãµes" }
                 ].map(item => (
                     <button 
                         key={item.id}
                         onClick={() => setActiveTab(item.id as any)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeTab === item.id ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeTab === item.id ? 'bg-red-50 text-red-700' : 'text-gray-600 hover:bg-gray-50'}`}
                     >
                         <item.icon size={20} /> {item.label}
                     </button>
@@ -451,11 +451,11 @@ export default function AdminPage() {
             {/* Dashboard */}
             {activeTab === "dashboard" && (
                 <div className="space-y-6 animate-in fade-in">
-                    <h2 className="text-2xl font-bold text-gray-800">Visão Geral</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">VisÃ£o Geral</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <CardStat label="Visualizações" value={stats.views} sub="Páginas visitadas" />
+                        <CardStat label="VisualizaÃ§Ãµes" value={stats.views} sub="PÃ¡ginas visitadas" />
                         <CardStat label="WhatsApp Clicks" value={stats.whatsapp} sub="Leads gerados" color="text-green-600" />
-                        <CardStat label="Compartilhamentos" value={stats.shares} sub="Engajamento" color="text-blue-600" />
+                        <CardStat label="Compartilhamentos" value={stats.shares} sub="Engajamento" color="text-red-600" />
                     </div>
                 </div>
             )}
@@ -468,7 +468,7 @@ export default function AdminPage() {
                         <div className="flex items-center gap-4 w-full md:w-auto">
                             <h2 className="text-2xl font-bold text-gray-800">Gerenciar Estoque</h2>
                             {selectedIds.length > 0 && (
-                                <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full">
+                                <span className="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded-full">
                                     {selectedIds.length} selecionados
                                 </span>
                             )}
@@ -495,7 +495,7 @@ export default function AdminPage() {
                                     </button>
                                     <button 
                                         onClick={openCreateVehicleModal}
-                                        className="flex-1 md:flex-none text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 flex items-center justify-center gap-2 transition-all"
+                                        className="flex-1 md:flex-none text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 flex items-center justify-center gap-2 transition-all"
                                     >
                                         <PlusCircle size={16} /> Novo Manual
                                     </button>
@@ -511,25 +511,25 @@ export default function AdminPage() {
                                     <th className="px-6 py-4 w-10">
                                         <input 
                                             type="checkbox" 
-                                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            className="w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500 cursor-pointer"
                                             checked={vehicles.length > 0 && selectedIds.length === vehicles.length}
                                             onChange={toggleSelectAll}
                                         />
                                     </th>
-                                    <th className="px-6 py-4">Veículo</th>
+                                    <th className="px-6 py-4">VeÃ­culo</th>
                                     <th className="px-6 py-4">Ano</th>
-                                    <th className="px-6 py-4">Preço</th>
+                                    <th className="px-6 py-4">PreÃ§o</th>
                                     <th className="px-6 py-4">Origem</th>
-                                    <th className="px-6 py-4 text-right">Ações</th>
+                                    <th className="px-6 py-4 text-right">AÃ§Ãµes</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {vehicles.map((v) => (
-                                    <tr key={v.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.includes(v.id) ? 'bg-blue-50/50' : ''}`}>
+                                    <tr key={v.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.includes(v.id) ? 'bg-red-50/50' : ''}`}>
                                         <td className="px-6 py-4">
                                             <input 
                                                 type="checkbox" 
-                                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                className="w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500 cursor-pointer"
                                                 checked={selectedIds.includes(v.id)}
                                                 onChange={() => toggleSelectOne(v.id)}
                                             />
@@ -553,7 +553,7 @@ export default function AdminPage() {
                                                     setPendingImageFiles([]);
                                                     setEditingVehicle(v);
                                                 }}
-                                                className="text-blue-500 hover:text-blue-700 p-2 hover:bg-blue-50 rounded transition-colors"
+                                                className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded transition-colors"
                                                 title="Editar"
                                             >
                                                 <Edit size={18} />
@@ -571,7 +571,7 @@ export default function AdminPage() {
                                 {vehicles.length === 0 && (
                                     <tr>
                                         <td colSpan={6} className="px-6 py-10 text-center text-gray-400">
-                                            Nenhum veículo encontrado no estoque.
+                                            Nenhum veÃ­culo encontrado no estoque.
                                         </td>
                                     </tr>
                                 )}
@@ -581,20 +581,20 @@ export default function AdminPage() {
                 </div>
             )}
 
-            {/* Configurações */}
+            {/* ConfiguraÃ§Ãµes */}
             {activeTab === "config" && (
                 <div className="max-w-4xl space-y-8 animate-in fade-in">
-                    <h2 className="text-2xl font-bold text-gray-800">Configurações</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">ConfiguraÃ§Ãµes</h2>
 
-                    {/* Sincronização */}
+                    {/* SincronizaÃ§Ã£o */}
                     <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                         <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <RefreshCw size={20} className="text-blue-600" /> API de Estoque
+                            <RefreshCw size={20} className="text-red-600" /> API de Estoque
                         </h3>
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div className="md:col-span-1">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Integração</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">IntegraÃ§Ã£o</label>
                                     <select 
                                         className="w-full border border-gray-300 rounded-lg p-3 text-sm bg-white"
                                         value={apiType}
@@ -618,13 +618,13 @@ export default function AdminPage() {
                                 </div>
                             </div>
                             
-                            {/* BARRA DE PROGRESSO E BOTÃO */}
+                            {/* BARRA DE PROGRESSO E BOTÃƒO */}
                             <div className="space-y-2">
                                 {/* Barra visual */}
                                 {isSyncing && (
                                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                                         <div 
-                                            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-out" 
+                                            className="bg-red-600 h-2.5 rounded-full transition-all duration-300 ease-out" 
                                             style={{ width: `${progress}%` }}
                                         ></div>
                                     </div>
@@ -634,7 +634,7 @@ export default function AdminPage() {
                                     <button 
                                         onClick={handleSync}
                                         disabled={isSyncing}
-                                        className={`flex-1 py-2.5 rounded-lg font-bold text-white transition flex items-center justify-center gap-2 ${isSyncing ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+                                        className={`flex-1 py-2.5 rounded-lg font-bold text-white transition flex items-center justify-center gap-2 ${isSyncing ? "bg-red-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"}`}
                                     >
                                         {isSyncing ? (
                                             <>
@@ -656,9 +656,9 @@ export default function AdminPage() {
                             {syncResult && (
                                 <div className={`p-4 rounded-lg border text-sm ${syncResult.success ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
                                     {syncResult.success ? (
-                                        <p>✅ <b>Sucesso!</b> Novos: {syncResult.inseridos}, Atualizados: {syncResult.atualizados}, Removidos: {syncResult.removidos}</p>
+                                        <p>âœ… <b>Sucesso!</b> Novos: {syncResult.inseridos}, Atualizados: {syncResult.atualizados}, Removidos: {syncResult.removidos}</p>
                                     ) : (
-                                        <p>❌ {syncResult.message}</p>
+                                        <p>âŒ {syncResult.message}</p>
                                     )}
                                 </div>
                             )}
@@ -671,7 +671,7 @@ export default function AdminPage() {
                             <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                                 <BarChart3 size={20} className="text-purple-600" /> Rastreamento (Pixel/GTM)
                             </h3>
-                            <button onClick={addScript} className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                            <button onClick={addScript} className="text-sm text-red-600 hover:underline flex items-center gap-1">
                                 <Plus size={16} /> Adicionar
                             </button>
                         </div>
@@ -706,7 +706,7 @@ export default function AdminPage() {
                             ))}
                             <div className="pt-4 border-t border-gray-100 flex justify-end">
                                 <button onClick={() => handleSaveConfig(true)} className="flex items-center gap-2 bg-purple-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-purple-700 transition shadow-sm">
-                                    <Save size={18} /> Salvar Alterações
+                                    <Save size={18} /> Salvar AlteraÃ§Ãµes
                                 </button>
                             </div>
                         </div>
@@ -714,12 +714,12 @@ export default function AdminPage() {
                 </div>
             )}
 
-            {/* --- MODAL DE EDIÇÃO --- */}
+            {/* --- MODAL DE EDIÃ‡ÃƒO --- */}
             {editingVehicle && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 animate-in zoom-in-50 duration-200">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-gray-800">{editingVehicle.id ? "Editar Veículo" : "Novo Veículo"}</h3>
+                            <h3 className="text-xl font-bold text-gray-800">{editingVehicle.id ? "Editar VeÃ­culo" : "Novo VeÃ­culo"}</h3>
                             <button onClick={closeVehicleModal} className="text-gray-400 hover:text-gray-600">
                                 <X size={24} />
                             </button>
@@ -754,7 +754,7 @@ export default function AdminPage() {
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Versão</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">VersÃ£o</label>
                                 <input 
                                     type="text" 
                                     className="w-full border rounded-lg p-2"
@@ -765,7 +765,7 @@ export default function AdminPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">PreÃ§o (R$)</label>
                                     <input 
                                         type="number" 
                                         className="w-full border rounded-lg p-2 font-bold text-green-700"
@@ -813,7 +813,7 @@ export default function AdminPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">CombustÃ­vel</label>
                                     <input 
                                         type="text" 
                                         list="fuel-options"
@@ -828,7 +828,7 @@ export default function AdminPage() {
                                     </datalist>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Câmbio</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">CÃ¢mbio</label>
                                     <input 
                                         type="text" 
                                         list="transmission-options"
@@ -859,12 +859,12 @@ export default function AdminPage() {
                                     ))}
                                 </datalist>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Digite para buscar. Se não encontrar, pode salvar exatamente o texto digitado.
+                                    Digite para buscar. Se nÃ£o encontrar, pode salvar exatamente o texto digitado.
                                 </p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">DescriÃ§Ã£o</label>
                                 <textarea 
                                     className="w-full border rounded-lg p-2 min-h-20"
                                     value={editingVehicle.descricao || ""}
@@ -878,7 +878,7 @@ export default function AdminPage() {
                                     <div className="grid grid-cols-3 gap-3">
                                         {editingVehicle.fotos.map((url: string) => (
                                             <div key={url} className="relative rounded-lg overflow-hidden border">
-                                                <img src={url} alt="Imagem do veículo" className="w-full h-20 object-cover" />
+                                                <img src={url} alt="Imagem do veÃ­culo" className="w-full h-20 object-cover" />
                                                 {editingVehicle.id && (
                                                     <button
                                                         type="button"
@@ -896,7 +896,7 @@ export default function AdminPage() {
                             )}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Adicionar imagens (múltiplas)</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Adicionar imagens (mÃºltiplas)</label>
                                 <input
                                     type="file"
                                     multiple
@@ -919,7 +919,7 @@ export default function AdminPage() {
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input 
                                             type="checkbox" 
-                                            className="w-5 h-5 text-blue-600 rounded"
+                                            className="w-5 h-5 text-red-600 rounded"
                                             checked={editingVehicle.destaque}
                                             onChange={e => setEditingVehicle({...editingVehicle, destaque: e.target.checked})}
                                         />
@@ -939,9 +939,9 @@ export default function AdminPage() {
                                 <button 
                                     type="submit" 
                                     disabled={isUpdating || isUploadingImages}
-                                    className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 flex justify-center gap-2"
+                                    className="flex-1 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 flex justify-center gap-2"
                                 >
-                                    {isUpdating || isUploadingImages ? <Loader2 className="animate-spin" /> : editingVehicle.id ? "Salvar Alterações" : "Criar Veículo"}
+                                    {isUpdating || isUploadingImages ? <Loader2 className="animate-spin" /> : editingVehicle.id ? "Salvar AlteraÃ§Ãµes" : "Criar VeÃ­culo"}
                                 </button>
                             </div>
                         </form>

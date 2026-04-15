@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,11 +17,11 @@ export default function LoginPage() {
     try {
       const res = await api.post("/auth/login", { email, senha });
 
-      // 🔹 salva token e dados do usuário
+      // ðŸ”¹ salva token e dados do usuÃ¡rio
       localStorage.setItem("token", res.data.access_token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // 🔹 redireciona
+      // ðŸ”¹ redireciona
       router.push("/admin");
     } catch (err: any) {
       console.error(err);
@@ -68,7 +68,7 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
         >
           Entrar
         </button>

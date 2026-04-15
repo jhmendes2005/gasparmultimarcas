@@ -18,16 +18,16 @@ interface Slide {
 const slides: Slide[] = [
   {
     imageSrc: "/banner2.png", // Ajuste para referência correta
-    alt: "Banner principal da Bom Jesus Automóveis",
-    //title: "Bom Jesus Automóveis",
+    alt: "Banner principal da Gaspar Multimarcas",
+    //title: "Gaspar Multimarcas",
     //subtitle: "Qualidade e confiança na compra do seu próximo veículo.",
     href: "/estoque",
     //buttonText: "Ver Estoque",
   },
   {
     imageSrc: "/banner.png", // Ajuste para referência correta
-    alt: "Banner principal da Bom Jesus Automóveis",
-    //title: "Bom Jesus Automóveis",
+    alt: "Banner principal da Gaspar Multimarcas",
+    //title: "Gaspar Multimarcas",
     //subtitle: "Qualidade e confiança na compra do seu próximo veículo.",
     href: "/estoque",
     //buttonText: "Ver Estoque",
@@ -84,7 +84,7 @@ export default function Hero() {
                 {slide.href && slide.buttonText && (
                   <Link
                     href={slide.href}
-                    className="rounded-lg bg-blue-600 px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-lg font-semibold text-white shadow-lg transition-transform hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                    className="rounded-lg bg-red-700 px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-lg font-semibold text-white shadow-lg transition-transform hover:scale-105 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
                   >
                     {slide.buttonText}
                   </Link>
