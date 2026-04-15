@@ -13,6 +13,66 @@ interface ScriptConfig {
   code: string;
 }
 
+const BRAZILIAN_BRANDS = [
+    "Audi",
+    "BMW",
+    "BYD",
+    "Caoa Chery",
+    "Chevrolet",
+    "Citroen",
+    "Fiat",
+    "Ford",
+    "GWM",
+    "Honda",
+    "Hyundai",
+    "Jeep",
+    "Kia",
+    "Land Rover",
+    "Lexus",
+    "Mercedes-Benz",
+    "Mitsubishi",
+    "Nissan",
+    "Peugeot",
+    "Porsche",
+    "RAM",
+    "Renault",
+    "Toyota",
+    "Volkswagen",
+    "Volvo",
+];
+
+const STANDARD_COLORS = [
+    "Branco",
+    "Preto",
+    "Prata",
+    "Cinza",
+    "Vermelho",
+    "Azul",
+    "Verde",
+    "Amarelo",
+    "Marrom",
+    "Bege",
+    "Dourado",
+    "Laranja",
+    "Vinho",
+    "Roxo",
+];
+
+const TRANSMISSIONS = ["Manual", "Automático", "Automatizado", "CVT"];
+
+const FUEL_TYPES = [
+    "Gasolina",
+    "Etanol",
+    "Flex",
+    "Diesel",
+    "Elétrico",
+    "Híbrido",
+    "GNV",
+];
+
+const CURRENT_YEAR = new Date().getFullYear() + 1;
+const STANDARD_YEARS = Array.from({ length: CURRENT_YEAR - 1989 }, (_, i) => String(CURRENT_YEAR - i));
+
 export default function AdminPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -671,10 +731,16 @@ export default function AdminPage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
                                     <input 
                                         type="text" 
+                                        list="brand-options"
                                         className="w-full border rounded-lg p-2"
                                         value={editingVehicle.marca} 
                                         onChange={e => setEditingVehicle({...editingVehicle, marca: e.target.value})}
                                     />
+                                    <datalist id="brand-options">
+                                        {BRAZILIAN_BRANDS.map((brand) => (
+                                            <option key={brand} value={brand} />
+                                        ))}
+                                    </datalist>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
@@ -710,11 +776,17 @@ export default function AdminPage() {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Ano Modelo</label>
                                     <input 
-                                        type="number" 
+                                        type="text"
+                                        list="year-options"
                                         className="w-full border rounded-lg p-2"
                                         value={editingVehicle.anoModelo || ""}
                                         onChange={e => setEditingVehicle({...editingVehicle, anoModelo: e.target.value})}
                                     />
+                                    <datalist id="year-options">
+                                        {STANDARD_YEARS.map((year) => (
+                                            <option key={year} value={year} />
+                                        ))}
+                                    </datalist>
                                 </div>
                             </div>
 
@@ -744,20 +816,51 @@ export default function AdminPage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
                                     <input 
                                         type="text" 
+                                        list="fuel-options"
                                         className="w-full border rounded-lg p-2"
                                         value={editingVehicle.combustivel || ""}
                                         onChange={e => setEditingVehicle({...editingVehicle, combustivel: e.target.value})}
                                     />
+                                    <datalist id="fuel-options">
+                                        {FUEL_TYPES.map((fuel) => (
+                                            <option key={fuel} value={fuel} />
+                                        ))}
+                                    </datalist>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Câmbio</label>
                                     <input 
                                         type="text" 
+                                        list="transmission-options"
                                         className="w-full border rounded-lg p-2"
                                         value={editingVehicle.cambio || ""}
                                         onChange={e => setEditingVehicle({...editingVehicle, cambio: e.target.value})}
                                     />
+                                    <datalist id="transmission-options">
+                                        {TRANSMISSIONS.map((transmission) => (
+                                            <option key={transmission} value={transmission} />
+                                        ))}
+                                    </datalist>
                                 </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Cor</label>
+                                <input
+                                    type="text"
+                                    list="color-options"
+                                    className="w-full border rounded-lg p-2"
+                                    value={editingVehicle.cor || ""}
+                                    onChange={e => setEditingVehicle({...editingVehicle, cor: e.target.value})}
+                                />
+                                <datalist id="color-options">
+                                    {STANDARD_COLORS.map((color) => (
+                                        <option key={color} value={color} />
+                                    ))}
+                                </datalist>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Digite para buscar. Se não encontrar, pode salvar exatamente o texto digitado.
+                                </p>
                             </div>
 
                             <div>
