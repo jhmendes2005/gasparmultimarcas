@@ -25,6 +25,22 @@ async function getNestExpressApp() {
 }
 
 export default async function handler(req: Request, res: Response) {
+  const isApiRoute = req.url === '/api' || req.url.startsWith('/api/');
+
+  // If a frontend page path is opened on the backend domain (e.g. /veiculo/slug),
+  // redirect to the frontend site to avoid 404 responses.
+  if (!isApiRoute && (req.method === 'GET' || req.method === 'HEAD')) {
+    const frontendBaseUrl = (
+      process.env.FRONTEND_URL ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.SITE_URL ||
+      'https://gasparmultimarcas.vercel.app'
+    ).replace(/\/$/, '');
+
+    const normalizedPath = req.url.startsWith('/') ? req.url : `/${req.url}`;
+    return res.redirect(308, `${frontendBaseUrl}${normalizedPath}`);
+  }
+
   const app = await getNestExpressApp();
 
   // In Vercel, this function is mounted under /api, but Nest controllers
