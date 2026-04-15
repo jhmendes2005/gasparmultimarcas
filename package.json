@@ -1,0 +1,14 @@
+{
+  "name": "gasparmultimarcas-monorepo",
+  "private": true,
+  "workspaces": [
+    "proj-carro-backend",
+    "proj-carros-frontend"
+  ],
+  "scripts": {
+    "dev:front": "npm --prefix proj-carros-frontend run dev",
+    "dev:back": "npm --prefix proj-carro-backend run start:dev",
+    "build:front": "npm --prefix proj-carros-frontend run build",
+    "build:back": "npm --prefix proj-carro-backend run build"
+  }
+}
