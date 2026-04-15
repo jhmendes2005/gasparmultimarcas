@@ -26,5 +26,14 @@ async function getNestExpressApp() {
 
 export default async function handler(req: Request, res: Response) {
   const app = await getNestExpressApp();
+
+  // In Vercel, this function is mounted under /api, but Nest controllers
+  // are declared without that prefix (e.g. /auth/login).
+  if (req.url === '/api') {
+    req.url = '/';
+  } else if (req.url.startsWith('/api/')) {
+    req.url = req.url.slice(4);
+  }
+
   return app(req, res);
 }
