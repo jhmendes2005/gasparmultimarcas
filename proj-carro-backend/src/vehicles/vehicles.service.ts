@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 
 interface FindAllParams {
@@ -16,6 +16,120 @@ interface FindAllParams {
 @Injectable()
 export class VehiclesService {
   constructor(private prisma: PrismaService) {}
+
+  private getStorageConfig() {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const bucket = process.env.SUPABASE_BUCKET || 'imagens_carros';
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      throw new BadRequestException(
+        'SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY são obrigatórios para upload de imagens.',
+      );
+    }
+
+    return { supabaseUrl: supabaseUrl.replace(/\/$/, ''), serviceRoleKey, bucket };
+  }
+
+  private slugify(text: string) {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+  }
+
+  private buildBaseSlug(data: any) {
+    const source = `${data?.marca || ''}-${data?.modelo || ''}-${data?.placa || ''}-${Date.now()}`;
+    return this.slugify(source || `veiculo-${Date.now()}`);
+  }
+
+  private toOptionalNumber(value: any): number | null {
+    if (value === null || value === undefined || value === '') return null;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  private normalizeVehicleInput(data: any, fallback?: any) {
+    return {
+      marca: data?.marca ?? fallback?.marca ?? '',
+      modelo: data?.modelo ?? fallback?.modelo ?? '',
+      versao: data?.versao ?? fallback?.versao ?? null,
+      anoFabricacao: this.toOptionalNumber(data?.anoFabricacao ?? fallback?.anoFabricacao),
+      anoModelo: this.toOptionalNumber(data?.anoModelo ?? fallback?.anoModelo),
+      preco: Number(data?.preco ?? fallback?.preco ?? 0) || 0,
+      quilometragem: this.toOptionalNumber(data?.quilometragem ?? fallback?.quilometragem),
+      placa: data?.placa ?? fallback?.placa ?? null,
+      chassi: data?.chassi ?? fallback?.chassi ?? null,
+      cor: data?.cor ?? fallback?.cor ?? null,
+      portas: this.toOptionalNumber(data?.portas ?? fallback?.portas),
+      tipo: data?.tipo ?? fallback?.tipo ?? null,
+      motor: data?.motor ?? fallback?.motor ?? null,
+      potencia: data?.potencia ?? fallback?.potencia ?? null,
+      cilindrada: data?.cilindrada ?? fallback?.cilindrada ?? null,
+      combustivel: data?.combustivel ?? fallback?.combustivel ?? null,
+      cambio: data?.cambio ?? fallback?.cambio ?? null,
+      cidade: data?.cidade ?? fallback?.cidade ?? null,
+      destaque: Boolean(data?.destaque ?? fallback?.destaque ?? false),
+      descricao: data?.descricao ?? fallback?.descricao ?? null,
+      opcionais: Array.isArray(data?.opcionais)
+        ? data.opcionais
+        : Array.isArray(fallback?.opcionais)
+          ? fallback.opcionais
+          : [],
+      fotos: Array.isArray(data?.fotos)
+        ? data.fotos
+        : Array.isArray(fallback?.fotos)
+          ? fallback.fotos
+          : [],
+    };
+  }
+
+  private async ensureUniqueSlug(baseSlug: string, excludeId?: number) {
+    let slug = baseSlug || `veiculo-${Date.now()}`;
+    let suffix = 1;
+
+    while (true) {
+      const existing = await this.prisma.vehicle.findFirst({
+        where: {
+          slug,
+          ...(excludeId ? { NOT: { id: excludeId } } : {}),
+        },
+        select: { id: true },
+      });
+
+      if (!existing) return slug;
+      slug = `${baseSlug}-${suffix++}`;
+    }
+  }
+
+  private extractStoragePathFromPublicUrl(url: string, bucket: string) {
+    const marker = `/storage/v1/object/public/${bucket}/`;
+    const idx = url.indexOf(marker);
+    if (idx === -1) return null;
+    return decodeURIComponent(url.slice(idx + marker.length));
+  }
+
+  private async deleteFromStorageByUrls(urls: string[]) {
+    if (!urls.length) return;
+
+    const { supabaseUrl, serviceRoleKey, bucket } = this.getStorageConfig();
+    const paths = urls
+      .map((url) => this.extractStoragePathFromPublicUrl(url, bucket))
+      .filter((path): path is string => Boolean(path));
+
+    for (const path of paths) {
+      const deleteUrl = `${supabaseUrl}/storage/v1/object/${bucket}/${path}`;
+      await fetch(deleteUrl, {
+        method: 'DELETE',
+        headers: {
+          apikey: serviceRoleKey,
+          Authorization: `Bearer ${serviceRoleKey}`,
+        },
+      });
+    }
+  }
 
   async findAll(params: FindAllParams = {}) {
     const { q, marca, modelo, tipo, anoMin, anoMax, precoMin, precoMax, sort } = params;
@@ -57,15 +171,44 @@ export class VehiclesService {
     return this.prisma.vehicle.findUnique({ where: { slug } });
   }
 
-  create(data: any) {
-    return this.prisma.vehicle.create({ data });
+  async create(data: any) {
+    const normalized = this.normalizeVehicleInput(data);
+    const slug = await this.ensureUniqueSlug(this.buildBaseSlug(data));
+
+    return this.prisma.vehicle.create({
+      data: {
+        ...normalized,
+        slug,
+      },
+    });
   }
 
-  update(id: number, data: any) {
-    return this.prisma.vehicle.update({ where: { id }, data });
+  async update(id: number, data: any) {
+    const existing = await this.prisma.vehicle.findUnique({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException('Veículo não encontrado.');
+    }
+
+    const normalized = this.normalizeVehicleInput(data, existing);
+    const slugBase = this.slugify(`${normalized.marca}-${normalized.modelo}-${normalized.placa || id}`);
+    const slug = await this.ensureUniqueSlug(slugBase, id);
+
+    return this.prisma.vehicle.update({
+      where: { id },
+      data: {
+        ...normalized,
+        slug,
+      },
+    });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const existing = await this.prisma.vehicle.findUnique({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException('Veículo não encontrado.');
+    }
+
+    await this.deleteFromStorageByUrls(existing.fotos || []);
     return this.prisma.vehicle.delete({ where: { id } });
   }
 
@@ -130,6 +273,85 @@ export class VehiclesService {
 
   async findFeatured(count = 6) {
     return this.prisma.$queryRawUnsafe(`SELECT "id", "slug", "marca", "modelo", "anoModelo", "preco", "quilometragem", "fotos" FROM "vehicle" ORDER BY RANDOM() LIMIT ${count};`);
+  }
+
+  async addImages(
+    id: number,
+    images: Array<{ dataUrl: string; fileName?: string; contentType?: string }> = [],
+  ) {
+    const vehicle = await this.prisma.vehicle.findUnique({ where: { id } });
+    if (!vehicle) {
+      throw new NotFoundException('Veículo não encontrado.');
+    }
+
+    if (!images.length) {
+      throw new BadRequestException('Nenhuma imagem enviada.');
+    }
+
+    const { supabaseUrl, serviceRoleKey, bucket } = this.getStorageConfig();
+    const uploadedUrls: string[] = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      const match = image.dataUrl?.match(/^data:(.+);base64,(.+)$/);
+      if (!match) {
+        throw new BadRequestException('Formato de imagem inválido.');
+      }
+
+      const contentType = image.contentType || match[1] || 'image/jpeg';
+      const base64 = match[2];
+      const buffer = Buffer.from(base64, 'base64');
+      const ext = (contentType.split('/')[1] || 'jpg').replace(/[^a-z0-9]/gi, '');
+      const fileName = `${Date.now()}-${i}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const path = `vehicles/${id}/${fileName}`;
+
+      const uploadUrl = `${supabaseUrl}/storage/v1/object/${bucket}/${path}`;
+      const uploadResponse = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: {
+          apikey: serviceRoleKey,
+          Authorization: `Bearer ${serviceRoleKey}`,
+          'Content-Type': contentType,
+          'x-upsert': 'false',
+        },
+        body: buffer,
+      });
+
+      if (!uploadResponse.ok) {
+        const errText = await uploadResponse.text();
+        throw new BadRequestException(`Falha ao enviar imagem para bucket: ${errText}`);
+      }
+
+      uploadedUrls.push(`${supabaseUrl}/storage/v1/object/public/${bucket}/${path}`);
+    }
+
+    const updated = await this.prisma.vehicle.update({
+      where: { id },
+      data: {
+        fotos: [...new Set([...(vehicle.fotos || []), ...uploadedUrls])],
+      },
+    });
+
+    return { uploadedUrls, vehicle: updated };
+  }
+
+  async removeImages(id: number, imageUrls: string[] = []) {
+    const vehicle = await this.prisma.vehicle.findUnique({ where: { id } });
+    if (!vehicle) {
+      throw new NotFoundException('Veículo não encontrado.');
+    }
+
+    const toRemove = imageUrls.filter((url) => (vehicle.fotos || []).includes(url));
+    await this.deleteFromStorageByUrls(toRemove);
+
+    const updated = await this.prisma.vehicle.update({
+      where: { id },
+      data: {
+        fotos: (vehicle.fotos || []).filter((url) => !toRemove.includes(url)),
+      },
+    });
+
+    return { removed: toRemove.length, vehicle: updated };
   }
 
   // ================================

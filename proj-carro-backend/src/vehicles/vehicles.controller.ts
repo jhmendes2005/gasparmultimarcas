@@ -77,6 +77,19 @@ export class VehiclesController {
   @Put(':id')
   update(@Param('id') id: string, @Body() data: any) { return this.vehiclesService.update(Number(id), data); }
 
+  @Post(':id/images')
+  addImages(
+    @Param('id') id: string,
+    @Body() body: { images: Array<{ dataUrl: string; fileName?: string; contentType?: string }> },
+  ) {
+    return this.vehiclesService.addImages(Number(id), body?.images || []);
+  }
+
+  @Delete(':id/images')
+  removeImages(@Param('id') id: string, @Body() body: { imageUrls: string[] }) {
+    return this.vehiclesService.removeImages(Number(id), body?.imageUrls || []);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) { return this.vehiclesService.remove(Number(id)); }
 

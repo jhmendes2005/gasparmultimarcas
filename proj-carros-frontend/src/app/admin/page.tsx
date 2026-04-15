@@ -41,6 +41,86 @@ export default function AdminPage() {
   // Modal de Edição
   const [editingVehicle, setEditingVehicle] = useState<any | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+    const [pendingImageFiles, setPendingImageFiles] = useState<File[]>([]);
+    const [isUploadingImages, setIsUploadingImages] = useState(false);
+
+    function openCreateVehicleModal() {
+        setPendingImageFiles([]);
+        setEditingVehicle({
+            id: null,
+            marca: "",
+            modelo: "",
+            versao: "",
+            preco: 0,
+            anoModelo: "",
+            quilometragem: "",
+            tipo: "",
+            combustivel: "",
+            cambio: "",
+            cor: "",
+            descricao: "",
+            destaque: false,
+            fotos: [],
+            opcionais: [],
+        });
+    }
+
+    function closeVehicleModal() {
+        setEditingVehicle(null);
+        setPendingImageFiles([]);
+    }
+
+    async function toDataUrl(file: File) {
+        return await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result || ""));
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function uploadPendingImages(vehicleId: number, files: File[]) {
+        if (!files.length) return;
+
+        setIsUploadingImages(true);
+        try {
+            const imagesPayload = await Promise.all(
+                files.map(async (file) => ({
+                    fileName: file.name,
+                    contentType: file.type,
+                    dataUrl: await toDataUrl(file),
+                })),
+            );
+
+            await api.post(`/vehicles/${vehicleId}/images`, { images: imagesPayload });
+        } finally {
+            setIsUploadingImages(false);
+        }
+    }
+
+    async function handleRemoveImage(imageUrl: string) {
+        if (!editingVehicle?.id) return;
+        try {
+            await api.delete(`/vehicles/${editingVehicle.id}/images`, {
+                data: { imageUrls: [imageUrl] },
+            });
+
+            setEditingVehicle((prev: any) => ({
+                ...prev,
+                fotos: (prev?.fotos || []).filter((url: string) => url !== imageUrl),
+            }));
+
+            setVehicles((prev) =>
+                prev.map((v) =>
+                    v.id === editingVehicle.id
+                        ? { ...v, fotos: (v.fotos || []).filter((url: string) => url !== imageUrl) }
+                        : v,
+                ),
+            );
+        } catch (error) {
+            alert("Erro ao remover imagem do veículo.");
+        }
+    }
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -221,17 +301,40 @@ export default function AdminPage() {
       if (!editingVehicle) return;
       setIsUpdating(true);
       try {
-          await api.put(`/vehicles/${editingVehicle.id}`, {
-              preco: Number(editingVehicle.preco),
-              destaque: editingVehicle.destaque,
+          const payload = {
               marca: editingVehicle.marca,
               modelo: editingVehicle.modelo,
-              versao: editingVehicle.versao
-          });
-          setVehicles(prev => prev.map(v => v.id === editingVehicle.id ? editingVehicle : v));
-          setEditingVehicle(null);
+              versao: editingVehicle.versao,
+              preco: Number(editingVehicle.preco || 0),
+              anoModelo: editingVehicle.anoModelo ? Number(editingVehicle.anoModelo) : null,
+              quilometragem: editingVehicle.quilometragem ? Number(editingVehicle.quilometragem) : null,
+              tipo: editingVehicle.tipo || null,
+              combustivel: editingVehicle.combustivel || null,
+              cambio: editingVehicle.cambio || null,
+              cor: editingVehicle.cor || null,
+              descricao: editingVehicle.descricao || null,
+              destaque: Boolean(editingVehicle.destaque),
+              fotos: Array.isArray(editingVehicle.fotos) ? editingVehicle.fotos : [],
+              opcionais: Array.isArray(editingVehicle.opcionais) ? editingVehicle.opcionais : [],
+          };
+
+          let savedVehicle;
+          if (editingVehicle.id) {
+              const res = await api.put(`/vehicles/${editingVehicle.id}`, payload);
+              savedVehicle = res.data;
+          } else {
+              const res = await api.post('/vehicles', payload);
+              savedVehicle = res.data;
+          }
+
+          if (pendingImageFiles.length > 0) {
+              await uploadPendingImages(savedVehicle.id, pendingImageFiles);
+          }
+
+          fetchVehicles();
+          closeVehicleModal();
       } catch (error) {
-          alert("Erro ao atualizar veículo.");
+          alert("Erro ao salvar veículo.");
       } finally {
           setIsUpdating(false);
       }
@@ -330,7 +433,10 @@ export default function AdminPage() {
                                     >
                                         <Trash2 size={16} /> Limpar Estoque
                                     </button>
-                                    <button className="flex-1 md:flex-none text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 flex items-center justify-center gap-2 transition-all">
+                                    <button 
+                                        onClick={openCreateVehicleModal}
+                                        className="flex-1 md:flex-none text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 flex items-center justify-center gap-2 transition-all"
+                                    >
                                         <PlusCircle size={16} /> Novo Manual
                                     </button>
                                 </>
@@ -383,7 +489,10 @@ export default function AdminPage() {
                                         </td>
                                         <td className="px-6 py-4 text-right flex justify-end gap-2">
                                             <button 
-                                                onClick={() => setEditingVehicle(v)}
+                                                onClick={() => {
+                                                    setPendingImageFiles([]);
+                                                    setEditingVehicle(v);
+                                                }}
                                                 className="text-blue-500 hover:text-blue-700 p-2 hover:bg-blue-50 rounded transition-colors"
                                                 title="Editar"
                                             >
@@ -550,8 +659,8 @@ export default function AdminPage() {
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 animate-in zoom-in-50 duration-200">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-gray-800">Editar Veículo</h3>
-                            <button onClick={() => setEditingVehicle(null)} className="text-gray-400 hover:text-gray-600">
+                            <h3 className="text-xl font-bold text-gray-800">{editingVehicle.id ? "Editar Veículo" : "Novo Veículo"}</h3>
+                            <button onClick={closeVehicleModal} className="text-gray-400 hover:text-gray-600">
                                 <X size={24} />
                             </button>
                         </div>
@@ -598,6 +707,111 @@ export default function AdminPage() {
                                         onChange={e => setEditingVehicle({...editingVehicle, preco: e.target.value})}
                                     />
                                 </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Ano Modelo</label>
+                                    <input 
+                                        type="number" 
+                                        className="w-full border rounded-lg p-2"
+                                        value={editingVehicle.anoModelo || ""}
+                                        onChange={e => setEditingVehicle({...editingVehicle, anoModelo: e.target.value})}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Quilometragem</label>
+                                    <input 
+                                        type="number" 
+                                        className="w-full border rounded-lg p-2"
+                                        value={editingVehicle.quilometragem || ""}
+                                        onChange={e => setEditingVehicle({...editingVehicle, quilometragem: e.target.value})}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                                    <input 
+                                        type="text" 
+                                        className="w-full border rounded-lg p-2"
+                                        value={editingVehicle.tipo || ""}
+                                        onChange={e => setEditingVehicle({...editingVehicle, tipo: e.target.value})}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
+                                    <input 
+                                        type="text" 
+                                        className="w-full border rounded-lg p-2"
+                                        value={editingVehicle.combustivel || ""}
+                                        onChange={e => setEditingVehicle({...editingVehicle, combustivel: e.target.value})}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Câmbio</label>
+                                    <input 
+                                        type="text" 
+                                        className="w-full border rounded-lg p-2"
+                                        value={editingVehicle.cambio || ""}
+                                        onChange={e => setEditingVehicle({...editingVehicle, cambio: e.target.value})}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                                <textarea 
+                                    className="w-full border rounded-lg p-2 min-h-20"
+                                    value={editingVehicle.descricao || ""}
+                                    onChange={e => setEditingVehicle({...editingVehicle, descricao: e.target.value})}
+                                />
+                            </div>
+
+                            {Array.isArray(editingVehicle.fotos) && editingVehicle.fotos.length > 0 && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Imagens atuais</label>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {editingVehicle.fotos.map((url: string) => (
+                                            <div key={url} className="relative rounded-lg overflow-hidden border">
+                                                <img src={url} alt="Imagem do veículo" className="w-full h-20 object-cover" />
+                                                {editingVehicle.id && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveImage(url)}
+                                                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                                                        title="Remover imagem"
+                                                    >
+                                                        <X size={12} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Adicionar imagens (múltiplas)</label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    className="w-full border rounded-lg p-2"
+                                    onChange={(e) => {
+                                        const selected = Array.from(e.target.files || []);
+                                        setPendingImageFiles((prev) => [...prev, ...selected]);
+                                    }}
+                                />
+                                {pendingImageFiles.length > 0 && (
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        {pendingImageFiles.length} imagem(ns) pronta(s) para upload.
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
                                 <div className="flex items-center mt-6">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input 
@@ -614,17 +828,17 @@ export default function AdminPage() {
                             <div className="pt-4 flex gap-3">
                                 <button 
                                     type="button" 
-                                    onClick={() => setEditingVehicle(null)}
+                                    onClick={closeVehicleModal}
                                     className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200"
                                 >
                                     Cancelar
                                 </button>
                                 <button 
                                     type="submit" 
-                                    disabled={isUpdating}
+                                    disabled={isUpdating || isUploadingImages}
                                     className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 flex justify-center gap-2"
                                 >
-                                    {isUpdating ? <Loader2 className="animate-spin" /> : "Salvar Alterações"}
+                                    {isUpdating || isUploadingImages ? <Loader2 className="animate-spin" /> : editingVehicle.id ? "Salvar Alterações" : "Criar Veículo"}
                                 </button>
                             </div>
                         </form>
