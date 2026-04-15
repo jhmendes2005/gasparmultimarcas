@@ -77,6 +77,11 @@ export default function AdminPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"dashboard" | "estoque" | "config">("dashboard");
+    const navItems = [
+        { id: "dashboard" as const, icon: BarChart3, label: "Dashboard" },
+        { id: "estoque" as const, icon: Car, label: "Estoque" },
+        { id: "config" as const, icon: Settings, label: "Configurações" },
+    ];
 
   // Dados
   const [vehicles, setVehicles] = useState<any[]>([]);
@@ -425,18 +430,29 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 flex-col md:flex-row">
+        <nav className="md:hidden bg-white border-b border-gray-200 px-4 py-2 sticky top-16 z-10">
+            <div className="flex gap-2 overflow-x-auto pb-1">
+                {navItems.map((item) => (
+                    <button
+                        key={item.id}
+                        onClick={() => setActiveTab(item.id)}
+                        className={`shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === item.id ? 'bg-red-50 text-red-700 border border-red-200' : 'text-gray-600 bg-gray-50 border border-transparent'}`}
+                    >
+                        <item.icon size={16} />
+                        {item.label}
+                    </button>
+                ))}
+            </div>
+        </nav>
+
         {/* Sidebar */}
         <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
             <nav className="p-4 space-y-2">
-                {[
-                    { id: "dashboard", icon: BarChart3, label: "Dashboard" },
-                    { id: "estoque", icon: Car, label: "Estoque" },
-                    { id: "config", icon: Settings, label: "ConfiguraÃ§Ãµes" }
-                ].map(item => (
+                {navItems.map(item => (
                     <button 
                         key={item.id}
-                        onClick={() => setActiveTab(item.id as any)}
+                        onClick={() => setActiveTab(item.id)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeTab === item.id ? 'bg-red-50 text-red-700' : 'text-gray-600 hover:bg-gray-50'}`}
                     >
                         <item.icon size={20} /> {item.label}
@@ -446,7 +462,7 @@ export default function AdminPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6 md:p-10 overflow-y-auto h-[calc(100vh-64px)] relative">
+        <main className="flex-1 p-4 md:p-10 overflow-y-auto h-[calc(100vh-120px)] md:h-[calc(100vh-64px)] relative">
             
             {/* Dashboard */}
             {activeTab === "dashboard" && (
