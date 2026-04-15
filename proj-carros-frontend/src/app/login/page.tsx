@@ -25,7 +25,14 @@ export default function LoginPage() {
       router.push("/admin");
     } catch (err: any) {
       console.error(err);
-      setErro("E-mail ou senha incorretos");
+      const backendMessage = err?.response?.data?.message;
+      if (Array.isArray(backendMessage)) {
+        setErro(backendMessage.join(" "));
+      } else if (typeof backendMessage === "string") {
+        setErro(backendMessage);
+      } else {
+        setErro("Erro no servidor ao tentar fazer login");
+      }
     }
   }
 
