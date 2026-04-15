@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import fetch from 'node-fetch';
 
 interface FindAllParams {
   q?: string;
