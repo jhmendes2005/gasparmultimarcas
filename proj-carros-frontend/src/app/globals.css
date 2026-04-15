@@ -27,6 +27,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Keep form field text readable on light inputs even when system is in dark mode */
+input,
+textarea,
+select {
+  color: #111827;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280;
+}
+
 /* === CAR LOADER === */
 
 .car-body {
