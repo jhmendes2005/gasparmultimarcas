@@ -17,7 +17,9 @@ Na primeira execução local, uma senha aleatória é criada em `.data/admin-pas
 
 ## O que funciona
 
-- Catálogo com busca, filtros, ordenação, detalhes e galeria.
+- Páginas individuais: `/`, `/estoque`, `/veiculo/:id`, `/sobre`, `/contato`, `/comparar`, `/encontre-seu-carro` e `/privacidade`.
+- Catálogo com busca, filtros, ordenação, detalhes e galeria em página própria.
+- Filtros preservados na URL, seleção de comparação entre páginas, títulos individuais e página 404.
 - Favoritos no navegador e comparação de até três veículos.
 - Sugestões por orçamento, câmbio e perfil de uso.
 - Contato pelo WhatsApp com o veículo selecionado.

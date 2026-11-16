@@ -40,9 +40,20 @@ if(path.startsWith('/api/')){
  return json(res,404,{error:'Recurso não encontrado.'});
 }
 if(!['GET','HEAD'].includes(method))return json(res,405,{error:'Método não permitido.'});
+const publicPages=new Set(['estoque','sobre','contato','comparar','encontre-seu-carro','privacidade']);
+const cleanPath=path.replace(/\/$/,'');
+const vehicleRoute=cleanPath.match(/^\/veiculo\/([\w-]+)$/);
+if(vehicleRoute||publicPages.has(cleanPath.slice(1))){
+ const selected=vehicleRoute?db.vehicles.find(c=>c.id===vehicleRoute[1]):null;
+ const found=!vehicleRoute||!!selected;
+ const template=vehicleRoute?(found?'veiculo.html':'404.html'):cleanPath.slice(1)+'.html';
+ let html=readFileSync(resolve(root,template),'utf8');
+ if(selected){const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));html=html.replace(/<title>.*?<\/title>/,()=>`<title>${escape(selected.brand+' '+selected.name+' '+selected.year)} | Gaspar Multimarcas</title>`)}
+ res.writeHead(found?200:404,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'});return res.end(method==='HEAD'?undefined:html);
+}
 let target;if(path.startsWith('/uploads/')){ensure(/^\/uploads\/[\w-]+\.(png|jpg|webp)$/.test(path),'Imagem inválida.');target=resolve(uploadDir,path.slice(9));}else{const file=resolve(root,'.'+decodeURIComponent(path));if(file!==root&&!file.startsWith(root+sep))return json(res,403,{error:'Acesso negado.'});target=file===root?resolve(root,'index.html'):path==='/admin'||path==='/admin/'?resolve(root,'admin.html'):file;}
 const data=readFileSync(target);const mime=({'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'})[extname(target)]||'application/octet-stream';res.writeHead(200,{'Content-Type':mime,'Cache-Control':target.includes(uploadDir)?'public, max-age=31536000, immutable':'no-cache'});res.end(method==='HEAD'?undefined:data);
-}catch(e){if(e.code==='ENOENT')return json(res,404,{error:'Não encontrado.'});if(e.status)return json(res,e.status,{error:e.message});console.error('Falha na solicitação:',e.name);json(res,500,{error:'Não foi possível concluir a solicitação.'})}});
+}catch(e){if(e.code==='ENOENT'){if(!req.url.startsWith('/api/')&&!extname(new URL(req.url,'http://localhost').pathname)){res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'});return res.end(req.method==='HEAD'?undefined:readFileSync(resolve(root,'404.html')))}return json(res,404,{error:'Não encontrado.'})}if(e.status)return json(res,e.status,{error:e.message});console.error('Falha na solicitação:',e.name);json(res,500,{error:'Não foi possível concluir a solicitação.'})}});
 server.requestTimeout=30000;
 setInterval(()=>{for(const [k,v]of sessions)if(v<Date.now())sessions.delete(k);for(const[k,v]of attempts)if(v.until<Date.now())attempts.delete(k)},60000).unref();
 const port=Number(process.env.PORT)||4173;server.listen(port,process.env.HOST||'127.0.0.1',()=>console.log(`Local: http://127.0.0.1:${port}\nPainel: http://127.0.0.1:${port}/admin`));
