@@ -1,3 +1,4 @@
+import {icon} from './ui-icons.js';
 export function normalizeSearch(value){
  return String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 }
@@ -22,7 +23,7 @@ export function setupLiveSearch(vehicles){
   const query=input.value.trim();
   if(!query){close();return}
   const matches=vehicles.filter(car=>matchesVehicle(car,query));
-  panel.innerHTML=`<div class="suggestion-heading"><span>${matches.length?'ENCONTRAMOS PARA VOCÊ':'VAMOS ENCONTRAR OUTRO CAMINHO'}</span><small>${matches.length} veículo${matches.length===1?'':'s'}</small></div>`+(matches.length?`<ul>${matches.slice(0,5).map(car=>`<li><a href="/veiculo/${encodeURIComponent(car.id)}"><img src="${escape(car.images[0].startsWith('assets/')?'/'+car.images[0]:car.images[0])}" alt="" width="80" height="56"><span><strong>${escape(car.brand+' '+car.name)}</strong><small>${car.year} · ${escape(car.version)}</small></span><b>${money(car.price)}</b><span aria-hidden="true">↗</span></a></li>`).join('')}</ul>`:'<p class="suggestion-empty">Nenhum veículo com esse termo. Experimente a marca, o modelo ou o ano.</p>')+`<a class="suggestion-all" href="${escape(stockUrl(query))}">${matches.length?'Ver todos os resultados':'Buscar no estoque'} <span>Enter ↵</span></a>`;
+  panel.innerHTML=`<div class="suggestion-heading"><span>${matches.length?'ENCONTRAMOS PARA VOCÊ':'VAMOS ENCONTRAR OUTRO CAMINHO'}</span><small>${matches.length} veículo${matches.length===1?'':'s'}</small></div>`+(matches.length?`<ul>${matches.slice(0,5).map(car=>`<li><a href="/veiculo/${encodeURIComponent(car.id)}"><img src="${escape(car.images[0].startsWith('assets/')?'/'+car.images[0]:car.images[0])}" alt="" width="80" height="56"><span><strong>${escape(car.brand+' '+car.name)}</strong><small>${car.year} · ${escape(car.version)}</small></span><b>${money(car.price)}</b><span aria-hidden="true">${icon('arrow-up-right')}</span></a></li>`).join('')}</ul>`:'<p class="suggestion-empty">Nenhum veículo com esse termo. Experimente a marca, o modelo ou o ano.</p>')+`<a class="suggestion-all" href="${escape(stockUrl(query))}">${matches.length?'Ver todos os resultados':'Buscar no estoque'} <span>Enter ↵</span></a>`;
   panel.hidden=false;input.setAttribute('aria-expanded','true');
  }
  input.addEventListener('input',suggest);
