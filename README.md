@@ -19,8 +19,8 @@ npm --prefix gaspar-redesign run dev
 Site: http://127.0.0.1:4173 · Painel: http://127.0.0.1:4173/admin
 
 Esta versão ainda não foi integrada ao deploy Vercel existente. O backend usa
-persistência local; antes do deploy serverless, será necessário configurar banco,
-bucket e persistência de sessões compatíveis com esse ambiente.
+PostgreSQL / Neon quando `DATABASE_URL` está configurada, incluindo sessões.
+Antes do deploy serverless, configure o bucket e o adaptador de rotas do backend.
 
 ## Deploy na Vercel
 

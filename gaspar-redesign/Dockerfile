@@ -2,7 +2,8 @@ FROM node:24-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
-COPY server.mjs ./
+COPY server.mjs storage.mjs ./
+COPY scripts ./scripts
 COPY dist ./dist
 RUN mkdir /data && chown node:node /data
 USER node
