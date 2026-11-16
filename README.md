@@ -69,7 +69,11 @@ Eventos do dataLayer: `search_inventory`, `view_vehicle`, `compare_vehicles` e `
 
 ## Publicação
 
-A aplicação está na raiz do repositório. A publicação na Vercel ainda não foi executada. O projeto Vercel `gasparmultimarcas` e seu Blob foram criados; o próximo passo de deploy precisa configurar as rotas do backend Node, `DATABASE_URL`, `ADMIN_PASSWORD` e `APP_ORIGIN` no ambiente hospedado.
+A aplicação está na raiz do repositório. O projeto Vercel `gasparmultimarcas` está conectado ao GitHub: pushes na `main` publicam produção; outras branches geram previews.
+
+A configuração `vercel.json` publica os arquivos de `dist` e encaminha as rotas dinâmicas ao adaptador `api/index.js`. A função usa PostgreSQL / Neon e Vercel Blob; arquivos temporários ficam em `/tmp`.
+
+Configure `DATABASE_URL`, `ADMIN_PASSWORD`, `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` e `BLOB_PUBLIC_URL` nas variáveis da Vercel. As três primeiras devem ser segredos. `APP_ORIGIN` é opcional; sem ela, a validação de origem exige o mesmo host da solicitação, permitindo os domínios de preview da própria implantação.
 
 Produção deve usar HTTPS, `NODE_ENV=production` e senha administrativa forte. As sessões e os anúncios podem ser compartilhados entre instâncias pelo PostgreSQL; o limitador de tentativas de login ainda é por processo e deve ser complementado na entrada da aplicação em uma implantação distribuída.
 

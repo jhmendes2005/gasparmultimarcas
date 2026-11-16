@@ -4,7 +4,7 @@ import {resolve,extname,sep} from 'node:path';
 import {randomBytes,scryptSync,timingSafeEqual,randomUUID} from 'node:crypto';
 import {openStore} from './storage.mjs';
 import {createImageStorage,imageType,MAX_IMAGE_BYTES} from './image-storage.mjs';
-const root=resolve('dist'),dataDir=resolve(process.env.DATA_DIR||'.data'),uploadDir=resolve(dataDir,'uploads');
+const root=resolve('dist'),dataDir=resolve(process.env.VERCEL?'/tmp/gaspar-multimarcas':(process.env.DATA_DIR||'.data')),uploadDir=resolve(dataDir,'uploads');
 mkdirSync(uploadDir,{recursive:true});
 if(process.env.NODE_ENV==='production'&&!process.env.DATABASE_URL)throw Error('Configure DATABASE_URL em produção.');
 const seed={vehicles:JSON.parse(readFileSync(resolve(root,'vehicles.json'),'utf8')),settings:{gtmId:'',metaPixelId:''}};
@@ -16,13 +16,14 @@ if(password.length<12)throw Error('ADMIN_PASSWORD precisa de pelo menos 12 carac
 const salt=randomBytes(16),passwordHash=scryptSync(password,salt,64);password=undefined;
 const attempts=new Map();const production=process.env.NODE_ENV==='production';
 const images=createImageStorage({uploadDir});
+if(process.env.VERCEL&&!images.cloudConfigured)throw Error('Configure o armazenamento de imagens na Vercel.');
 function json(res,status,body){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(body))}
 async function body(req,limit=100000){const parts=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>limit){const e=Error('Arquivo ou solicitação muito grande.');e.status=413;throw e}parts.push(chunk)}return Buffer.concat(parts)}
 async function payload(req){try{return JSON.parse((await body(req)).toString())}catch(e){if(e.status)throw e;throw Object.assign(Error('JSON inválido.'),{status:400})}}
 function ensure(condition,message){if(!condition)throw Object.assign(Error(message),{status:400})}
 const imageUrl=value=>images.acceptsImageUrl(value);
 function vehicle(input,id){const v={id};for(const key of ['brand','name','version','transmission','fuel','category','badge','description']){ensure(typeof(input[key]??'')==='string','Campo de texto inválido.');v[key]=String(input[key]??'').trim();ensure(v[key].length<=(key==='description'?3000:120),'Texto longo demais.')}ensure(v.brand&&v.name&&v.version,'Informe marca, modelo e versão.');for(const key of ['price','year','km']){v[key]=Number(input[key]);ensure(Number.isFinite(v[key]),'Valor numérico inválido.')}ensure(v.price>0&&v.price<100000000,'Preço inválido.');ensure(Number.isInteger(v.year)&&v.year>=1900&&v.year<=new Date().getFullYear()+2,'Ano inválido.');ensure(Number.isInteger(v.km)&&v.km>=0&&v.km<=3000000,'Quilometragem inválida.');ensure(['Hatch','SUV','Sedã','Monovolume','Picape','Perua','Cupê','Outro'].includes(v.category),'Categoria inválida.');ensure(['Automático','Manual','Automatizado','CVT'].includes(v.transmission),'Câmbio inválido.');ensure(Array.isArray(input.images)&&input.images.length>0&&input.images.length<=20&&input.images.every(imageUrl),'Adicione de 1 a 20 fotos válidas.');v.images=input.images;return v}
-const server=createServer(async(req,res)=>{res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');res.setHeader('X-Frame-Options','SAMEORIGIN');
+export async function handler(req,res){res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');res.setHeader('X-Frame-Options','SAMEORIGIN');
 try{const url=new URL(req.url,'http://localhost'),path=url.pathname;const method=req.method;
 if(path.startsWith('/api/')){
  if(!['GET','HEAD'].includes(method)){const origin=req.headers.origin;const allowed=process.env.APP_ORIGIN;if(origin){ensure(allowed?origin===allowed:new URL(origin).host===req.headers.host,'Origem não autorizada.')}if(req.headers['sec-fetch-site']==='cross-site')return json(res,403,{error:'Origem não autorizada.'})}
@@ -54,7 +55,11 @@ if(vehicleRoute||publicPages.has(cleanPath.slice(1))){
 }
 let target;if(path.startsWith('/uploads/')){ensure(/^\/uploads\/[\w-]+\.(png|jpg|webp)$/.test(path),'Imagem inválida.');target=resolve(uploadDir,path.slice(9));}else{const file=resolve(root,'.'+decodeURIComponent(path));if(file!==root&&!file.startsWith(root+sep))return json(res,403,{error:'Acesso negado.'});target=file===root?resolve(root,'index.html'):path==='/admin'||path==='/admin/'?resolve(root,'admin.html'):file;}
 const data=readFileSync(target);const mime=({'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'})[extname(target)]||'application/octet-stream';res.writeHead(200,{'Content-Type':mime,'Cache-Control':target.includes(uploadDir)?'public, max-age=31536000, immutable':'no-cache'});res.end(method==='HEAD'?undefined:data);
-}catch(e){if(e.code==='ENOENT'){if(!req.url.startsWith('/api/')&&!extname(new URL(req.url,'http://localhost').pathname)){res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'});return res.end(req.method==='HEAD'?undefined:readFileSync(resolve(root,'404.html')))}return json(res,404,{error:'Não encontrado.'})}if(e.status)return json(res,e.status,{error:e.message});console.error('Falha na solicitação:',e.name);json(res,500,{error:'Não foi possível concluir a solicitação.'})}});
+}catch(e){if(e.code==='ENOENT'){if(!req.url.startsWith('/api/')&&!extname(new URL(req.url,'http://localhost').pathname)){res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'});return res.end(req.method==='HEAD'?undefined:readFileSync(resolve(root,'404.html')))}return json(res,404,{error:'Não encontrado.'})}if(e.status)return json(res,e.status,{error:e.message});console.error('Falha na solicitação:',e.name);json(res,500,{error:'Não foi possível concluir a solicitação.'})}}
+if(!process.env.VERCEL){
+ const server=createServer(handler);
 server.requestTimeout=30000;
 setInterval(()=>{store.pruneSessions().catch(()=>console.error('Não foi possível limpar sessões expiradas.')); for(const[k,v]of attempts)if(v.until<Date.now())attempts.delete(k)},60000).unref();
 const port=Number(process.env.PORT)||4173;server.listen(port,process.env.HOST||'127.0.0.1',()=>console.log(`Banco: ${store.kind}\nLocal: http://127.0.0.1:${port}\nPainel: http://127.0.0.1:${port}/admin`));
+
+}
