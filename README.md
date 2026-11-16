@@ -19,7 +19,9 @@ Configure o `.env` seguindo `.env.example`. A primeira execução local gera uma
 ## Funcionalidades
 
 - Início, estoque, veículo individual, sobre nós, contato, comparação, seleção por perfil e privacidade.
+- Busca global com sugestões instantâneas; Enter abre o estoque com o termo na URL.
 - Filtros na URL, favoritos e comparação entre páginas.
+- Três contatos no cabeçalho e rodapé com canais, endereço e horários organizados.
 - Três números de contato visíveis e sorteio de atendente nos botões gerais de WhatsApp.
 - Cadastro, edição e remoção manual de veículos, fotos múltiplas, capa e ordenação.
 - Google Tag Manager e Meta Pixel configuráveis, carregados após consentimento.
