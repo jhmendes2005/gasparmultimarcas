@@ -32,6 +32,9 @@ export class PostgresStore {
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('settings')} (id integer PRIMARY KEY CHECK(id=1), data jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`);
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('sessions')} (token_hash text PRIMARY KEY, expires_at timestamptz NOT NULL)`);
    await client.query(`CREATE INDEX IF NOT EXISTS sessions_expires_at ON ${this.table('sessions')} (expires_at)`);
+   await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('import_jobs')} (id text PRIMARY KEY, data jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`);
+   await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('import_links')} (source_key text PRIMARY KEY, vehicle_id text NOT NULL)`);
+   await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('import_images')} (source_hash text PRIMARY KEY, url text NOT NULL)`);
    const applied=await client.query(`SELECT id FROM ${this.table('migrations')} WHERE id=$1`,['001-initial-import']);
    if(!applied.rowCount){
     const count=await client.query(`SELECT count(*)::int AS count FROM ${this.table('vehicles')}`);

@@ -63,6 +63,18 @@ S3 compatível continua disponível como alternativa pelas variáveis `S3_*`. Co
 
 Remover um anúncio não apaga suas fotos do armazenamento para evitar quebrar imagens reutilizadas. Cadastros cancelados também podem deixar arquivos órfãos; a limpeza desses arquivos deve ser tratada separadamente.
 
+## Importação WooCommerce
+
+No painel `/admin`, abra **Importar WooCommerce** e selecione a exportação CSV de produtos em UTF-8 (vírgula ou ponto e vírgula). Limite: 1 MB / 500 produtos / 20 fotos por veículo / 8 MB por foto.
+
+O importador usa apenas marca, modelo, versão, ano do modelo, preço regular, quilometragem, câmbio, combustível, categoria, descrição e fotos. Descrições HTML viram texto. SKU, cores, portas, impostos, frete e metadados do WordPress não entram no catálogo. Categorias são sugeridas pelo modelo; confira-as na revisão. Preços promocionais são ignorados.
+
+Revise os avisos e edite os dados antes de iniciar. Produtos não publicados, sem estoque ou de tipo diferente de `simple` não podem ser importados. Campos ausentes ou ambíguos precisam ser corrigidos. Anúncios existentes são reconhecidos por vínculo do ID WooCommerce ou por marca/modelo/ano/KM exatos e únicos. Eles começam desmarcados; selecioná-los atualiza o cadastro e substitui suas fotos. Não há exclusão automática de veículos ausentes no CSV.
+
+As imagens do CSV **nunca são usadas como URLs públicas do anúncio**, nem como miniaturas na revisão. O servidor baixa apenas arquivos HTTPS da pasta `/wp-content/uploads/` dos domínios `gasparmultimarcas.com.br` e `www.gasparmultimarcas.com.br`, valida o conteúdo e copia para Vercel Blob. Cada chamada processa uma foto; o anúncio é salvo somente após todas as fotos serem copiadas. Realize a importação enquanto o WordPress ainda atende nesse domínio. Após apontar o domínio para a Vercel, fotos ainda não copiadas não estarão mais disponíveis nesse endereço.
+
+Jobs, progresso, cache das fotos copiadas e vínculos WooCommerce ficam em tabelas privadas do Neon (`import_jobs`, `import_images`, `import_links`), acessíveis apenas por endpoints autenticados. Atualize o banco com `npm run db:migrate` antes de publicar esta versão. Fechar o painel interrompe o processamento; volte à aba e clique em **Retomar importação**. Erros preservam as fotos já copiadas e o anúncio anterior. Reimportar o mesmo ID atualiza o veículo vinculado, evitando duplicatas.
+
 ## GTM e Meta Pixel
 
 No painel, abra **Integrações e pixels** e informe `GTM-...` e/ou o ID numérico do Meta Pixel. Sem IDs, nenhum rastreador é carregado. O visitante pode aceitar, recusar ou revogar o consentimento.

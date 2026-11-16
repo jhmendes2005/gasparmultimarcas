@@ -20,10 +20,10 @@ export function createImageStorage({env=process.env,uploadDir}={}){
  let bucket;
  function isBlobUrl(value){try{const url=new URL(value);return !!blobOrigin&&url.protocol==='https:'&&url.origin===new URL(blobOrigin).origin&&!url.search&&!url.hash&&blobPath.test(url.pathname.slice(1))}catch{return false}}
  function acceptsImageUrl(value){if(typeof value!=='string'||value.length>1500)return false;if(/^\/?(?:assets\/car-[\w.-]+|uploads\/[\w.-]+)$/.test(value))return true;if(isBlobUrl(value))return true;try{const url=new URL(value),base=new URL(env.S3_PUBLIC_URL);return url.protocol==='https:'&&url.origin===base.origin&&url.pathname.startsWith(base.pathname.replace(/\/$/,'')+'/')}catch{return false}}
- async function saveImage(data,type){
+ async function saveImage(data,type,{signal}={}){
   ensure(data.length<=MAX_IMAGE_BYTES&&imageType(data),'Envie uma imagem JPG, PNG ou WebP de até 8 MB.');
   const name=randomUUID()+'.'+type[0],pathname='vehicles/'+name;
-  if(token){const blob=await put(pathname,data,{access:'public',token,contentType:type[1],addRandomSuffix:false,cacheControlMaxAge:31536000});return blob.url}
+  if(token){const blob=await put(pathname,data,{access:'public',token,contentType:type[1],addRandomSuffix:false,cacheControlMaxAge:31536000,abortSignal:signal});return blob.url}
   if(s3Configured){if(!bucket){const {S3Client,PutObjectCommand}=await import('@aws-sdk/client-s3');bucket={client:new S3Client({region:env.S3_REGION||'auto',endpoint:env.S3_ENDPOINT||undefined,forcePathStyle:env.S3_FORCE_PATH_STYLE==='true',credentials:{accessKeyId:env.S3_ACCESS_KEY_ID,secretAccessKey:env.S3_SECRET_ACCESS_KEY}}),PutObjectCommand}}await bucket.client.send(new bucket.PutObjectCommand({Bucket:env.S3_BUCKET,Key:pathname,Body:data,ContentType:type[1],CacheControl:'public, max-age=31536000, immutable'}));return env.S3_PUBLIC_URL.replace(/\/$/,'')+'/'+pathname}
   writeFileSync(resolve(uploadDir,name),data);return '/uploads/'+name;
  }
