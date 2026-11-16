@@ -118,3 +118,16 @@ node --env-file=.env --test tests/image-storage.test.mjs
 ```
 
 O teste PostgreSQL cria e remove somente um schema temporário próprio. O teste Blob envia, lê, valida e remove apenas a foto criada pela própria execução.
+
+
+## SEO e indexação
+
+As páginas públicas recebem títulos, descrições, canonical, Open Graph e Twitter Cards no servidor. O domínio canônico é `https://gasparmultimarcas.com.br`. O acesso público por `www` redireciona permanentemente para esse domínio; versões `.html` e barras finais também são normalizadas. URLs de preview e ambientes locais não são indexáveis. Comparação, favoritos e filtros de estoque recebem `noindex,follow`, com canonical limpo para evitar variações duplicadas.
+
+O estoque e as fichas dos veículos são entregues no HTML inicial, com o mesmo componente usado pelo navegador. Os dados iniciais públicos são incorporados de forma segura, evitando uma segunda busca do catálogo ao carregar a página. A galeria, os favoritos, os filtros e o rastreamento do WhatsApp continuam disponíveis com JavaScript.
+
+Dados estruturados JSON-LD incluem `AutoDealer`, `WebSite`, páginas, breadcrumbs, lista de estoque e `Car`/`Product` com oferta em BRL, fotos e quilometragem. São usados apenas endereço, contatos, horários e dados cadastrados; não são inventados avaliações, VIN, coordenadas ou prazos de preço. A marcação não garante resultados enriquecidos específicos.
+
+`/sitemap.xml` é gerado a partir do estoque atual e inclui fotos e a data real de atualização registrada no PostgreSQL. Veículos removidos saem do sitemap automaticamente. A versão local omite datas que não existem, em vez de usar a data de cada requisição. `/robots.txt` publica o sitemap e restringe as áreas administrativas e o redirecionamento de atendimento, mantendo CSS, JavaScript e fotos rastreáveis. Páginas inexistentes e veículos removidos retornam 404.
+
+Para acompanhar indexação e pesquisas, cadastre o domínio e envie `https://gasparmultimarcas.com.br/sitemap.xml` no Google Search Console da loja. Verificação da propriedade e envio ao Search Console dependem do acesso à conta do proprietário; não são realizados apenas pelo deploy do site.

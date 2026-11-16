@@ -6,6 +6,7 @@ import {openStore} from './storage.mjs';
 import {createImageStorage,imageType,MAX_IMAGE_BYTES} from './image-storage.mjs';
 import {createImporter} from './woo-import.mjs';
 import {LeadRepository,parseLeadClick,leadRange} from './whatsapp-leads.mjs';
+import {SITE_ORIGIN,seoPages,renderSeoPage,sitemapXml,robotsTxt} from './seo.mjs';
 const root=resolve('dist'),dataDir=resolve(process.env.VERCEL?'/tmp/gaspar-multimarcas':(process.env.DATA_DIR||'.data')),uploadDir=resolve(dataDir,'uploads');
 mkdirSync(uploadDir,{recursive:true});
 if(process.env.NODE_ENV==='production'&&!process.env.DATABASE_URL)throw Error('Configure DATABASE_URL em produção.');
@@ -29,6 +30,18 @@ const importer=createImporter({store,images,validate:vehicle});
 const leads=new LeadRepository(store);
 export async function handler(req,res){res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');res.setHeader('X-Frame-Options','SAMEORIGIN');
 try{const url=new URL(req.url,'http://localhost'),path=url.pathname;const method=req.method;
+const indexableHost=req.headers.host===new URL(SITE_ORIGIN).host;
+if(!indexableHost&&req.headers.host!=='www.gasparmultimarcas.com.br')res.setHeader('X-Robots-Tag','noindex, nofollow');
+if(['GET','HEAD'].includes(method)){
+ if(req.headers.host==='www.gasparmultimarcas.com.br'&&!path.startsWith('/api/')&&path!=='/whatsapp'){res.writeHead(301,{'Location':SITE_ORIGIN+path+url.search,'Cache-Control':'no-cache'});return res.end()}
+ let normalized=path.replace(/\/+$/,'')||'/';
+ if(normalized==='/index.html')normalized='/';else if(normalized==='/admin.html')normalized='/admin';else if(normalized.endsWith('.html')&&seoPages[normalized.slice(0,-5)])normalized=normalized.slice(0,-5);
+ if(normalized!==path){res.writeHead(301,{'Location':normalized+url.search,'Cache-Control':'no-cache'});return res.end()}
+ if(path==='/robots.txt'||path==='/sitemap.xml'){
+  const data=path==='/robots.txt'?robotsTxt(indexableHost):sitemapXml(await store.listSitemapVehicles());
+  res.writeHead(200,{'Content-Type':path==='/robots.txt'?'text/plain; charset=utf-8':'application/xml; charset=utf-8','Cache-Control':'no-cache'});return res.end(method==='HEAD'?undefined:data);
+ }
+}
 if(path==='/whatsapp'&&['GET','HEAD'].includes(method)){
  const {event,destination}=parseLeadClick(url.searchParams);
  const preview=/prefetch|prerender/i.test(String(req.headers['sec-purpose']||req.headers.purpose||''));
@@ -41,6 +54,7 @@ if(path==='/whatsapp'&&['GET','HEAD'].includes(method)){
  res.writeHead(302,{'Location':destination,'Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex, nofollow'});return res.end();
 }
 if(path.startsWith('/api/')){
+ res.setHeader('X-Robots-Tag','noindex, nofollow');
  if(!['GET','HEAD'].includes(method)){const origin=req.headers.origin;const allowed=process.env.APP_ORIGIN;if(origin){ensure(allowed?origin===allowed:new URL(origin).host===req.headers.host,'Origem não autorizada.')}if(req.headers['sec-fetch-site']==='cross-site')return json(res,403,{error:'Origem não autorizada.'})}
  if(path==='/api/vehicles'&&method==='GET')return json(res,200,await store.listVehicles());
  if(path==='/api/settings'&&method==='GET')return json(res,200,await store.getSettings());
@@ -62,20 +76,22 @@ if(path.startsWith('/api/')){
  return json(res,404,{error:'Recurso não encontrado.'});
 }
 if(!['GET','HEAD'].includes(method))return json(res,405,{error:'Método não permitido.'});
-const publicPages=new Set(['estoque','sobre','contato','comparar','encontre-seu-carro','privacidade']);
 const cleanPath=path.replace(/\/$/,'');
 const vehicleRoute=cleanPath.match(/^\/veiculo\/([\w-]+)$/);
-if(vehicleRoute||publicPages.has(cleanPath.slice(1))){
- const selected=vehicleRoute?await store.getVehicle(vehicleRoute[1]):null;
+if(vehicleRoute||seoPages[path]||path==='/404.html'||path==='/veiculo.html'){
+ const needsStock=path==='/'||path==='/estoque'||!!vehicleRoute;
+ const cars=needsStock?await store.listVehicles():[];
+ const selected=vehicleRoute?cars.find(car=>car.id===vehicleRoute[1]):null;
  const found=!vehicleRoute||!!selected;
- const template=vehicleRoute?(found?'veiculo.html':'404.html'):cleanPath.slice(1)+'.html';
- let html=readFileSync(resolve(root,template),'utf8');
- if(selected){const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));html=html.replace(/<title>.*?<\/title>/,()=>`<title>${escape(selected.brand+' '+selected.name+' '+selected.year)} | Gaspar Multimarcas</title>`)}
- res.writeHead(found?200:404,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'});return res.end(method==='HEAD'?undefined:html);
+ const notFound=!found||path==='/404.html'||path==='/veiculo.html';
+ const template=notFound?'404.html':vehicleRoute?'veiculo.html':path==='/'?'index.html':cleanPath.slice(1)+'.html';
+ const result=renderSeoPage(readFileSync(resolve(root,template),'utf8'),{path,params:url.searchParams,cars,car:selected,indexableHost,notFound});
+ res.setHeader('X-Robots-Tag',result.robots);res.writeHead(notFound?404:200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'});return res.end(method==='HEAD'?undefined:result.html);
 }
+if(path==='/admin')res.setHeader('X-Robots-Tag','noindex, nofollow');
 let target;if(path.startsWith('/uploads/')){ensure(/^\/uploads\/[\w-]+\.(png|jpg|webp)$/.test(path),'Imagem inválida.');target=resolve(uploadDir,path.slice(9));}else{const file=resolve(root,'.'+decodeURIComponent(path));if(file!==root&&!file.startsWith(root+sep))return json(res,403,{error:'Acesso negado.'});target=file===root?resolve(root,'index.html'):path==='/admin'||path==='/admin/'?resolve(root,'admin.html'):file;}
 const data=readFileSync(target);const mime=({'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'})[extname(target)]||'application/octet-stream';res.writeHead(200,{'Content-Type':mime,'Cache-Control':target.includes(uploadDir)?'public, max-age=31536000, immutable':'no-cache'});res.end(method==='HEAD'?undefined:data);
-}catch(e){if(e.code==='ENOENT'){if(!req.url.startsWith('/api/')&&!extname(new URL(req.url,'http://localhost').pathname)){res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'});return res.end(req.method==='HEAD'?undefined:readFileSync(resolve(root,'404.html')))}return json(res,404,{error:'Não encontrado.'})}if(e.status)return json(res,e.status,{error:e.message});console.error('Falha na solicitação:',e.name);json(res,500,{error:'Não foi possível concluir a solicitação.'})}}
+}catch(e){if(e.code==='ENOENT'){if(!req.url.startsWith('/api/')&&!extname(new URL(req.url,'http://localhost').pathname)){const result=renderSeoPage(readFileSync(resolve(root,'404.html'),'utf8'),{path:new URL(req.url,'http://localhost').pathname,notFound:true,indexableHost:false});res.setHeader('X-Robots-Tag','noindex, follow');res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'});return res.end(req.method==='HEAD'?undefined:result.html)}return json(res,404,{error:'Não encontrado.'})}if(e.status)return json(res,e.status,{error:e.message});console.error('Falha na solicitação:',e.name);json(res,500,{error:'Não foi possível concluir a solicitação.'})}}
 if(!process.env.VERCEL){
  const server=createServer(handler);
 server.requestTimeout=30000;

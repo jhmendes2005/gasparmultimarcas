@@ -14,6 +14,7 @@ export function initMotion(){
   for(const entry of entries){
    if(!entry.isIntersecting)continue;
    const el=entry.target;observer.unobserve(el);pending.delete(el);
+   if(!el.isConnected)continue;
    const key=el.dataset.motionKey;if(key&&seenVehicles.has(key))continue;
    if(key)seenVehicles.add(key);
    // Conteúdo em foco deve permanecer imediatamente visível para o teclado.

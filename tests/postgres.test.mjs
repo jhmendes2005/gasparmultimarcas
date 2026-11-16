@@ -12,6 +12,7 @@ test('Neon: migração, CRUD e sessões compartilhadas entre instâncias', {skip
  try{
   await first.migrate(seed);await first.ready();
   assert.equal((await second.listVehicles()).length,1);
+  const sitemap=await second.listSitemapVehicles();assert.equal(sitemap[0].id,'test-car');assert.ok(sitemap[0].lastModified instanceof Date);assert.deepEqual(sitemap[0].images,['/assets/car-1-0.png']);
   const car=await first.getVehicle('test-car');
   await first.updateVehicle({...car,price:60000});
   assert.equal((await second.getVehicle('test-car')).price,60000);
@@ -32,6 +33,7 @@ test('Neon: migração, CRUD e sessões compartilhadas entre instâncias', {skip
   assert.equal(await first.deleteVehicle('second-test'),true);
   await first.migrate(seed);
   assert.equal((await second.listVehicles()).length,0,'A migração não pode recriar veículos removidos.');
+  assert.equal((await second.listSitemapVehicles()).length,0);
   assert.equal((await second.getSettings()).gtmId,'GTM-TEST123');
   const client=await first.pool.connect();assert.equal(client.connection.stream.encrypted,true);client.release();
  }finally{

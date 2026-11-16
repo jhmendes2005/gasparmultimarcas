@@ -49,6 +49,7 @@ export class PostgresStore {
  }
  async ready(){await this.pool.query(`SELECT id FROM ${this.table('migrations')} WHERE id='001-initial-import'`)}
  async listVehicles(){return (await this.pool.query(`SELECT data FROM ${this.table('vehicles')} ORDER BY created_at DESC,id`)).rows.map(row=>row.data)}
+ async listSitemapVehicles(){return (await this.pool.query(`SELECT id,data->'images' AS images,updated_at AS "lastModified" FROM ${this.table('vehicles')} ORDER BY created_at DESC,id`)).rows}
  async getVehicle(id){return (await this.pool.query(`SELECT data FROM ${this.table('vehicles')} WHERE id=$1`,[id])).rows[0]?.data||null}
  async createVehicle(car){await this.pool.query(`INSERT INTO ${this.table('vehicles')} (id,data) VALUES ($1,$2::jsonb)`,[car.id,JSON.stringify(car)]);return car}
  async updateVehicle(car){const result=await this.pool.query(`UPDATE ${this.table('vehicles')} SET data=$2::jsonb,updated_at=now() WHERE id=$1`,[car.id,JSON.stringify(car)]);return result.rowCount?car:null}
@@ -71,6 +72,7 @@ export class LocalStore {
  save(){writeFileSync(this.file+'.tmp',JSON.stringify(this.data,null,2));renameSync(this.file+'.tmp',this.file)}
  async ready(){}
  async listVehicles(){return this.data.vehicles}
+ async listSitemapVehicles(){return this.data.vehicles.map(({id,images})=>({id,images}))}
  async getVehicle(id){return this.data.vehicles.find(c=>c.id===id)||null}
  async createVehicle(car){this.data.vehicles.unshift(car);this.save();return car}
  async updateVehicle(car){const i=this.data.vehicles.findIndex(c=>c.id===car.id);if(i<0)return null;this.data.vehicles[i]=car;this.save();return car}
