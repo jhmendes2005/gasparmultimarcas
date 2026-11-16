@@ -1,14 +1,29 @@
 {
-  "name": "gasparmultimarcas-monorepo",
+  "name": "gaspar-multimarcas",
+  "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "proj-carro-backend",
-    "proj-carros-frontend"
-  ],
   "scripts": {
-    "dev:front": "npm --prefix proj-carros-frontend run dev",
-    "dev:back": "npm --prefix proj-carro-backend run start:dev",
-    "build:front": "npm --prefix proj-carros-frontend run build",
-    "build:back": "npm --prefix proj-carro-backend run build"
+    "dev": "node --env-file-if-exists=.env server.mjs",
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "check": "node --check server.mjs && node --check dist/app.js && node --check dist/admin.js && node --check dist/contact-routing.js && node --check storage.mjs && node --check scripts/migrate-db.mjs && node --check image-storage.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "db:migrate": "node --env-file-if-exists=.env scripts/migrate-db.mjs",
+    "build": "node scripts/build-client.mjs",
+    "images:migrate": "node --env-file-if-exists=.env scripts/migrate-images.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
+    "@vercel/blob": "^2.9.0",
+    "pg": "^8.23.1"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  },
+  "overrides": {
+    "zod": "^4.6.7"
   }
 }

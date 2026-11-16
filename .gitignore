@@ -1,35 +1,11 @@
-# dependencies
-**/node_modules
-
-# build outputs
-**/.next
-**/dist
-**/coverage
-
-# local env
-**/.env
-**/.env.local
-**/.env.development
-**/.env.production
-
-# logs
-**/npm-debug.log*
-**/yarn-debug.log*
-**/yarn-error.log*
-
-# system/editor
-.DS_Store
-Thumbs.db
-.vercel
-
-# migration backups
-**/.git_backup_*
-
-# Authored redesign assets (dist contains source files for this buildless site)
-!gaspar-redesign/dist/
-!gaspar-redesign/dist/**
-**/.data/
-**/.openai/
-**/.sites-local/
-**/preview/
+node_modules/
+.sites-local/
 *.zip
+.data/
+.env
+
+.vercel
+.env*
+!.env.example
+.openai/
+preview/
