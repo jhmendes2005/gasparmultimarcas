@@ -24,3 +24,12 @@ Thumbs.db
 
 # migration backups
 **/.git_backup_*
+
+# Authored redesign assets (dist contains source files for this buildless site)
+!gaspar-redesign/dist/
+!gaspar-redesign/dist/**
+**/.data/
+**/.openai/
+**/.sites-local/
+**/preview/
+*.zip

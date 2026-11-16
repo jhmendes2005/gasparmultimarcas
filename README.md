@@ -5,6 +5,23 @@ Este repositório contém:
 - `proj-carro-backend` (NestJS + Prisma)
 - `proj-carros-frontend` (Next.js)
 
+## Nova experiência Gaspar
+
+O redesign está em [`gaspar-redesign`](./gaspar-redesign/README.md), com catálogo,
+comparador, favoritos, painel administrativo, upload de fotos e integração
+preparada para S3/R2, Google Tag Manager e Meta Pixel.
+
+```bash
+npm --prefix gaspar-redesign ci
+npm --prefix gaspar-redesign run dev
+```
+
+Site: http://127.0.0.1:4173 · Painel: http://127.0.0.1:4173/admin
+
+Esta versão ainda não foi integrada ao deploy Vercel existente. O backend usa
+persistência local; antes do deploy serverless, será necessário configurar banco,
+bucket e persistência de sessões compatíveis com esse ambiente.
+
 ## Deploy na Vercel
 
 A raiz tem um `vercel.json` que publica frontend e backend juntos no mesmo projeto da Vercel.
