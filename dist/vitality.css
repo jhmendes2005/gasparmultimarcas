@@ -1,0 +1,217 @@
+/* Uma tipografia mais presente, com contraste e espaço para respirar. */
+body[data-page]{--ink:#1b1b23;--muted:#555560;--cream:#fffdfc;color:var(--ink);font-size:16px;line-height:1.6;background:var(--cream)}
+body[data-page] h1,body[data-page] h2,body[data-page] h3{font-weight:700}
+body[data-page] .eyebrow{font-size:12px;font-weight:750;letter-spacing:1.5px;line-height:1.6}
+body[data-page] .brand{color:#c01822}
+body[data-page] .button{font-size:15px;font-weight:700;min-height:54px;padding:17px 24px;gap:22px;line-height:1.4}
+body[data-page] .button.small{font-size:14px;min-height:46px;padding:12px 17px;gap:15px}
+body[data-page] .nav{gap:18px}
+body[data-page] .nav nav{font-size:15px;font-weight:650;gap:24px;margin-left:0;line-height:1.5}
+body[data-page] .nav-actions{gap:15px}
+body[data-page] .topbar{font-weight:600}
+body[data-page] .topbar-contacts{font-size:12px;gap:20px}
+body[data-page] .topbar-contacts a+a{padding-left:20px}
+body[data-page] .hero{height:clamp(650px,47vw,730px)}
+body[data-page] .hero-content{padding-top:clamp(54px,5vw,78px)}
+body[data-page] .hero h1{font-size:clamp(48px,4.9vw,72px);font-weight:750;line-height:1.08;letter-spacing:-2.5px;margin:23px 0}
+body[data-page] .hero .eyebrow{font-size:12px;letter-spacing:1.5px}
+body[data-page] .hero h1 em{color:#ff5e65}
+body[data-page] .hero p{font-size:18px;line-height:1.75;color:#f3f1f2;margin-bottom:28px}
+body[data-page] .hero-footer{font-size:11px;letter-spacing:1.1px;margin-top:45px;color:#f4f1f2;font-weight:600}
+body[data-page] .hero-shade{background:linear-gradient(90deg,#101015e8,#10101579 47%,#1010150d),linear-gradient(0deg,#1010155c,transparent 55%)}
+body[data-page] .image-credit{font-size:11px;color:#eee}
+body[data-page] h2{font-size:clamp(32px,3.1vw,46px);line-height:1.2;letter-spacing:-1.3px}
+body[data-page] .section-heading>p,body[data-page] .home-story p{font-size:16px;line-height:1.8;color:var(--muted)}
+body[data-page] .section-heading .eyebrow{font-size:12px;letter-spacing:1.3px}
+body[data-page] .text-link{font-size:15px;font-weight:650;line-height:1.5}
+body[data-page] .search-intro strong{font-size:23px}
+body[data-page] .search-intro .eyebrow{font-size:10px}
+body[data-page] .search-panel label{font-size:12px;color:#555560;font-weight:600}
+body[data-page] .search-panel select{font-size:15px;min-height:30px}
+body[data-page] .search-panel .button{font-size:14px;gap:10px;padding-inline:15px}
+body[data-page] .search-results-summary{font-size:15px;color:var(--muted)}
+body[data-page] .tabs button{font-size:14px;font-weight:650;min-height:44px;padding:10px 15px}
+body[data-page] .tabs button span{font-size:11px}
+body[data-page] .sort-label,body[data-page] .sort-label select{font-size:13px;color:#4e4e58}
+body[data-page] .vehicle-card{border-color:#e6dfe0;border-radius:12px;box-shadow:0 4px 18px #30222606}
+body[data-page] .car-body{padding:23px}
+body[data-page] .car-brand{font-size:11px;color:#b11b23;font-weight:750;letter-spacing:1.1px}
+body[data-page] .car-body h3{font-size:27px;line-height:1.3;font-weight:750;letter-spacing:-.6px;margin-top:6px}
+body[data-page] .car-version{font-size:14px;line-height:1.7;color:#53535e;margin-top:6px}
+body[data-page] .car-specs{font-size:12px;gap:10px 14px;line-height:1.7;color:#4f4f5b;font-weight:500;margin-top:19px;padding-bottom:18px}
+body[data-page] .car-price{font-size:29px;font-weight:750;color:#25212a;letter-spacing:-.7px;line-height:1.25}
+body[data-page] .car-price small{font-size:14px;font-weight:600}
+body[data-page] .car-bottom{gap:10px;padding-top:20px}
+body[data-page] .detail-arrow{width:42px;height:42px;font-size:24px;background:#ffe8e9}
+body[data-page] .compare-label{font-size:13px;min-height:44px;line-height:1.5;color:#53535e;padding-top:16px;gap:9px}
+body[data-page] .compare-label input{width:17px;height:17px;flex-shrink:0}
+body[data-page] .inventory-note{font-size:13px;color:#5e5e68}
+body[data-page] .car-badge{font-size:10px;font-weight:700;background:#fff4f4f5;padding:7px 10px}
+body[data-page] .match-section{background:linear-gradient(120deg,#29171e,#202023 65%);border:1px solid #4d2830}
+body[data-page] .match-content{padding:50px 45px 50px 0}
+body[data-page] .match-content h2{font-size:clamp(33px,3.2vw,46px);font-weight:700}
+body[data-page] .match-content>.eyebrow{font-size:11px;color:#ffafb3}
+body[data-page] .match-content p{font-size:16px;line-height:1.8;max-width:430px;color:#ece3e6}
+body[data-page] .match-content small{font-size:12px;color:#dbcace}
+body[data-page] .benefits h3{font-size:19px;font-weight:750;line-height:1.4}
+body[data-page] .benefits p{font-size:15px;line-height:1.8;color:#565660}
+body[data-page] .benefit-icon{font-size:34px}
+body[data-page] .benefit-number{font-size:12px;color:#897078}
+body[data-page] .store-copy h2{font-size:clamp(32px,3vw,44px)}
+body[data-page] .store-copy>p{font-size:16px;max-width:480px;color:#555560}
+body[data-page] .store-info strong{font-size:15px}
+body[data-page] .store-info p{font-size:14px;color:#555560}
+body[data-page] .store-photo>span{font-size:12px}
+body[data-page] .home-story>div{flex-wrap:wrap}
+body[data-page] .closing h2{font-size:clamp(36px,4vw,56px);font-weight:750}
+body[data-page] .page-heading h1{font-size:clamp(38px,4.3vw,62px);font-weight:750;letter-spacing:-1.8px;line-height:1.12}
+body[data-page] .page-heading>p{font-size:17px;max-width:760px;color:#555560}
+body[data-page] .breadcrumb{font-size:13px;font-weight:600}
+body[data-page] .contact-card h2{font-size:32px}
+body[data-page] .contact-card p,body[data-page] .contact-card address{font-size:16px;color:#50505c}
+body[data-page] .contact-card h3{font-size:19px}
+body[data-page] .quiz-form legend{font-size:17px}
+body[data-page] .quiz-form label{font-size:16px}
+body[data-page] .quiz-page #quiz-results>p{font-size:16px}
+body[data-page] .vehicle-page .detail-copy h1{font-size:clamp(36px,4vw,52px);font-weight:750}
+body[data-page] .detail-copy p{font-size:16px;color:#51515c;line-height:1.85}
+body[data-page] .vehicle-page .detail-copy .car-price{font-size:38px;font-weight:750;color:#c31822}
+body[data-page] .detail-specs div{font-size:16px;font-weight:650;padding:14px;background:#fff0f0}
+body[data-page] .detail-specs small{font-size:12px;font-weight:600;color:#76565b}
+body[data-page] .gallery-help{font-size:13px;color:#5b5b65}
+body[data-page] .photo-count{font-size:12px}
+body[data-page] .related-vehicles h2{font-size:clamp(29px,3vw,42px)}
+body[data-page] .compare-table th,body[data-page] .compare-table td{font-size:14px;line-height:1.6}
+body[data-page] .remove-comparison{font-size:13px}
+body[data-page] .privacy-page h2{font-size:29px}
+body[data-page] .privacy-copy p{font-size:16px;color:#50505b}
+body[data-page] .header-search-caption{font-size:13px;font-weight:700}
+body[data-page] .header-search-hint{font-size:12px}
+body[data-page] .live-search-form input{font-size:15px}
+body[data-page] .live-search-form>button{font-size:13px}
+body[data-page] .live-search-results strong{font-size:14px;color:#28232c}
+body[data-page] .live-search-results li small{font-size:12px;color:#565662}
+body[data-page] .live-search-results b{font-size:14px}
+body[data-page] .suggestion-heading>span{font-size:10px}
+body[data-page] .suggestion-heading small{font-size:12px}
+body[data-page] .suggestion-all{font-size:14px;font-weight:650}
+body[data-page] .site-footer{background:#1b1b21;border-top-width:5px}
+body[data-page] .footer-brand p{font-size:18px;color:#ccc8cf}
+body[data-page] .site-footer h2{font-size:15px;font-weight:750;letter-spacing:0;line-height:1.5;color:white}
+body[data-page] .footer-brand p strong{font-weight:750}
+body[data-page] .footer-navigation>a,body[data-page] .footer-visit address,body[data-page] .footer-visit>a,body[data-page] .footer-hours p{font-size:14px;color:#d0cbd2}
+body[data-page] .footer-hours p{max-width:270px}
+body[data-page] .footer-hours>span{font-size:12px;color:#b5aeb9}
+body[data-page] .footer-contact-heading>span{font-size:11px;color:#d0b7bc;font-weight:650}
+body[data-page] .footer-contact-heading>a{font-size:15px;font-weight:650;color:#ffb2b7}
+body[data-page] .footer-contact-card small{font-size:11px;color:#d2bcc4;font-weight:650}
+body[data-page] .footer-contact-card strong{font-size:clamp(19px,1.8vw,25px);font-weight:700}
+body[data-page] .footer-legal{font-size:12px;color:#bdb7c3;flex-wrap:wrap;gap:12px 24px}
+body[data-page] .footer-legal>a{color:#ded8e3}
+
+/* Redes visíveis, com ícones locais e sem widgets de terceiros. */
+.header-socials{display:flex;gap:7px;align-items:center}
+.header-socials a{display:grid;place-items:center;width:38px;height:40px;border:1px solid #ecdfe2;border-radius:50%;background:#fff3f4;color:#c31822;transition:background .25s,color .25s,transform .25s}
+.social-icon{width:20px;height:20px;display:block;flex-shrink:0}
+.footer-socials{display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid #3c3038;padding-block:28px;margin-top:28px}
+.footer-socials h2{margin-bottom:5px!important}
+.footer-socials p{font-size:14px;color:#c8becb;line-height:1.7}
+.social-links{display:flex;gap:12px;flex-wrap:wrap}
+.social-link{display:inline-flex;align-items:center;justify-content:center;gap:11px;min-height:48px;padding:12px 19px;border-radius:7px;font-size:15px;font-weight:700;line-height:1.4;transition:transform .25s,box-shadow .25s,filter .25s;color:white}
+.social-instagram{background:linear-gradient(125deg,#dc3d51,#b81439)}
+.social-facebook{background:#1666d8}
+.social-links a:hover{color:white}
+.contact-socials{display:flex;flex-direction:column;gap:14px;margin-top:8px;padding-top:23px;border-top:1px solid var(--line);width:100%}
+.contact-socials h3{margin-top:0}
+@media(hover:hover) and (pointer:fine){.header-socials a:hover{background:#d31920;color:white;transform:translateY(-2px)}.social-link:hover{transform:translateY(-3px);box-shadow:0 8px 24px #0002;filter:brightness(1.08)}}
+@media(max-width:1100px){body[data-page] .nav nav{gap:18px;font-size:14px}body[data-page] .nav-actions{gap:10px}body[data-page] .header-search-hint{display:none}}
+@media(max-width:960px){
+ body[data-page] .nav nav{display:none}
+ body[data-page] .nav nav.open{display:flex;position:absolute;top:92px;inset-inline:0;flex-direction:column;background:#fff;gap:0;padding:12px 28px;box-shadow:0 15px 28px #0001}
+ body[data-page] .nav nav a{padding:15px 0;font-size:16px}
+ body[data-page] .nav-actions .whatsapp{display:none}
+ body[data-page] .menu{display:flex;min-width:40px;min-height:44px}
+ body[data-page] .footer-contact-grid{grid-template-columns:minmax(0,1fr)}
+ body[data-page] .footer-contact-card{padding:22px;gap:18px}
+ body[data-page] .footer-contact-card strong{font-size:25px}
+}
+@media(max-width:760px){
+ body[data-page] .nav{height:78px;gap:8px}
+ body[data-page] .nav-actions{gap:8px}
+ body[data-page] .nav nav.open{top:78px}
+ body[data-page] .nav-actions .icon-button{font-size:23px;min-width:36px;padding:5px}
+ body[data-page] .nav-actions .icon-button span{font-size:11px}
+ .header-socials{gap:5px}
+ .header-socials a{width:36px;height:40px}
+ .header-socials .social-icon{width:18px;height:18px}
+ body[data-page] .topbar-contacts{font-size:clamp(10px,2.7vw,12px);gap:8px}
+ body[data-page] .topbar-contacts a+a{padding-left:8px}
+ body[data-page] .topbar .container{padding-block:10px}
+ body[data-page] .hero{height:640px}
+ body[data-page] .hero-content{padding-top:48px}
+ body[data-page] .hero h1{font-size:clamp(36px,10.5vw,48px);line-height:1.1;letter-spacing:-1.5px;font-weight:750;margin:25px 0}
+ body[data-page] .hero .eyebrow{font-size:10px;letter-spacing:1.1px;line-height:1.7;gap:9px}
+ body[data-page] .hero p{font-size:16px;line-height:1.8}
+ body[data-page] .hero .button{font-size:14px;gap:14px;max-width:100%}
+ body[data-page] .hero-footer{font-size:10px;letter-spacing:.8px;margin-top:40px}
+ body[data-page] .image-credit{font-size:10px;bottom:25px}
+ body[data-page] .eyebrow,body[data-page] .section-heading .eyebrow{font-size:11px;letter-spacing:1px}
+ body[data-page] h2{font-size:32px;letter-spacing:-.8px}
+ body[data-page] .section-heading h2{max-width:none}
+ body[data-page] .section-heading>.text-link{font-size:14px;gap:16px;margin-top:0}
+ body[data-page] .section-heading>.text-link span{font-size:20px}
+ body[data-page] .section-heading{flex-wrap:wrap;gap:20px}
+ body[data-page] .section-heading>p{font-size:15px}
+ body[data-page] .page-heading h1{font-size:clamp(36px,9.5vw,44px);letter-spacing:-1.2px}
+ body[data-page] .page-heading>p{font-size:16px}
+ body[data-page] .search-panel select{font-size:16px}
+ body[data-page] .search-panel .button{font-size:14px;gap:8px;min-height:54px;padding:12px}
+ body[data-page] .tabs button{font-size:13px;padding:10px 12px}
+ body[data-page] .car-body{padding:20px}
+ body[data-page] .car-body h3{font-size:27px}
+ body[data-page] .car-brand{font-size:12px}
+ body[data-page] .car-version{font-size:15px}
+ body[data-page] .car-specs{font-size:12px;gap:9px 13px}
+ body[data-page] .car-price{font-size:29px}
+ body[data-page] .car-price small{font-size:14px}
+ body[data-page] .compare-label{font-size:13px}
+ body[data-page] .detail-arrow{width:44px;height:44px}
+ body[data-page] .match-content{padding:38px 25px}
+ body[data-page] .match-content h2{font-size:34px}
+ body[data-page] .match-content>.eyebrow{font-size:10px}
+ body[data-page] .match-content p{font-size:16px;max-width:100%}
+ body[data-page] .match-content .button{font-size:14px;gap:14px;max-width:100%}
+ body[data-page] .benefits h3{font-size:17px}
+ body[data-page] .benefits p{font-size:14px}
+ body[data-page] .contact-card{padding:24px}
+ body[data-page] .contact-card h2{font-size:29px}
+ body[data-page] .contact-card p,body[data-page] .contact-card address{font-size:16px}
+ body[data-page] .contact-card>.button{width:100%;font-size:15px}
+ body[data-page] .quiz-form .button{font-size:15px;gap:15px}
+ body[data-page] .vehicle-page .detail-copy h1{font-size:38px}
+ body[data-page] .vehicle-page .detail-copy .car-price{font-size:35px}
+ body[data-page] .related-vehicles h2{font-size:31px}
+ body[data-page] .live-search-form input{font-size:16px}
+ body[data-page] .live-search-form>button{font-size:12px;padding-inline:11px}
+ body[data-page] .live-search-results strong{font-size:13px;overflow-wrap:anywhere}
+ body[data-page] .live-search-results b{font-size:12px}
+ body[data-page] .suggestion-heading>span{font-size:9px}
+ body[data-page] .suggestion-heading small{font-size:11px}
+ body[data-page] .footer-top{gap:32px 20px}
+ body[data-page] .footer-brand p{font-size:19px}
+ body[data-page] .site-footer h2{font-size:15px}
+ body[data-page] .footer-navigation>a,body[data-page] .footer-visit address,body[data-page] .footer-visit>a,body[data-page] .footer-hours p{font-size:14px}
+ body[data-page] .footer-contact-heading>span{font-size:10px;letter-spacing:1px}
+ body[data-page] .footer-contact-card{padding:20px;gap:14px}
+ body[data-page] .footer-contact-card strong{font-size:24px}
+ body[data-page] .footer-contact-card small{font-size:10px}
+ body[data-page] .footer-legal{font-size:12px}
+ .footer-socials{align-items:flex-start;flex-direction:column;gap:20px;padding-block:25px}
+ .footer-socials p{font-size:14px}
+ .social-links{gap:10px}
+ .social-link{padding:12px 16px;min-height:48px;font-size:14px}
+ .contact-socials .social-links{flex-direction:column}
+}
+@media(min-width:541px) and (max-width:760px){body[data-page] .car-body{padding:16px}body[data-page] .car-price{font-size:24px}body[data-page] .car-bottom{gap:6px}body[data-page] .car-price small{font-size:12px}}
+@media(max-width:360px){body[data-page] .footer-top{grid-template-columns:minmax(0,1fr)}body[data-page] .footer-brand{gap:16px}body[data-page] .footer-contact-card strong{font-size:21px}body[data-page] .footer-contact-card{gap:12px}body[data-page] .footer-brand p{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.header-socials a,.social-link{transition:none}.header-socials a:hover,.social-link:hover{transform:none}}

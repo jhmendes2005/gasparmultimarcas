@@ -131,3 +131,10 @@ Dados estruturados JSON-LD incluem `AutoDealer`, `WebSite`, páginas, breadcrumb
 `/sitemap.xml` é gerado a partir do estoque atual e inclui fotos e a data real de atualização registrada no PostgreSQL. Veículos removidos saem do sitemap automaticamente. A versão local omite datas que não existem, em vez de usar a data de cada requisição. `/robots.txt` publica o sitemap e restringe as áreas administrativas e o redirecionamento de atendimento, mantendo CSS, JavaScript e fotos rastreáveis. Páginas inexistentes e veículos removidos retornam 404.
 
 Para acompanhar indexação e pesquisas, cadastre o domínio e envie `https://gasparmultimarcas.com.br/sitemap.xml` no Google Search Console da loja. Verificação da propriedade e envio ao Search Console dependem do acesso à conta do proprietário; não são realizados apenas pelo deploy do site.
+
+
+## Identidade visual e redes sociais
+
+A camada pública de tipografia, contraste e cores está em `dist/vitality.css`; o painel administrativo mantém seus próprios estilos. Ela amplia os títulos, textos, botões e preços, com ajustes para celular e tablet.
+
+Os perfis oficiais informados pela loja ficam em `dist/social-links.js`. O servidor renderiza Instagram e Facebook no cabeçalho e no rodapé de todas as páginas públicas, além da página de contato. Os mesmos links alimentam o `sameAs` da loja nos dados estruturados. Ícones SVG locais evitam carregar widgets e scripts de redes sociais. Edite esse arquivo para atualizar os destinos.
