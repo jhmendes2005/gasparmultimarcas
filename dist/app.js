@@ -1,5 +1,5 @@
 import { matchesVehicle, setupLiveSearch } from '/vehicle-search.js';
-import { createWhatsAppUrl } from '/contact-routing.js';
+import { setupWhatsAppClicks } from '/whatsapp-clicks.js';
 import { initMotion } from '/site-motion.js';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -47,5 +47,5 @@ init().catch(()=>{const target=$('#vehicles')||$('#vehicle-detail');if(target)ta
 async function initTracking(){let settings;try{const r=await fetch('/api/settings');if(!r.ok)return;settings=await r.json()}catch{return}if(!settings.gtmId&&!settings.metaPixelId)return;const consent=read('gaspar-consent',null);if(consent==='accepted')loadTracking(settings);if(consent===null){const banner=document.createElement('aside');banner.className='cookie-banner';banner.setAttribute('aria-label','Preferências de privacidade');banner.innerHTML='<p>Podemos usar cookies de medição e publicidade para entender visitas e melhorar sua experiência?</p><div><button class="button dark" data-consent="accepted">Aceitar</button><button class="button outline" data-consent="rejected">Recusar</button></div>';document.body.append(banner);banner.onclick=e=>{const choice=e.target.closest('[data-consent]');if(!choice)return;persist('gaspar-consent',choice.dataset.consent);banner.remove();if(choice.dataset.consent==='accepted')loadTracking(settings)}}}
 function loadTracking(s){if(window.gasparTrackingLoaded)return;window.gasparTrackingLoaded=true;window.dataLayer=window.dataLayer||[];if(/^GTM-[A-Z0-9]+$/.test(s.gtmId||'')){window.dataLayer.push({'gtm.start':Date.now(),event:'gtm.js'});const script=document.createElement('script');script.async=true;script.src='https://www.googletagmanager.com/gtm.js?id='+s.gtmId;document.head.append(script)}if(/^\d{5,25}$/.test(s.metaPixelId||'')){const fb=window.fbq=function(){fb.callMethod?fb.callMethod.apply(fb,arguments):fb.queue.push(arguments)};fb.queue=[];fb.loaded=true;fb.version='2.0';window._fbq=fb;const script=document.createElement('script');script.async=true;script.src='https://connect.facebook.net/en_US/fbevents.js';document.head.append(script);fb('init',s.metaPixelId);fb('track','PageView')}}
 
-// Atualiza o destino antes da abertura nativa do link, preservando a mensagem.
-document.addEventListener('click',event=>{const link=event.target.closest('a[data-whatsapp-random]');if(!link)return;const message=new URL(link.href).searchParams.get('text')||'';link.href=createWhatsAppUrl(message);});
+
+setupWhatsAppClicks();

@@ -35,6 +35,8 @@ export class PostgresStore {
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('import_jobs')} (id text PRIMARY KEY, data jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`);
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('import_links')} (source_key text PRIMARY KEY, vehicle_id text NOT NULL)`);
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('import_images')} (source_hash text PRIMARY KEY, url text NOT NULL)`);
+   await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('whatsapp_clicks')} (id uuid PRIMARY KEY, number text NOT NULL CHECK(number IN ('5547996190693','5547988237774','554733180795')), placement text NOT NULL, page text NOT NULL, vehicle_id text, vehicle_label text, created_at timestamptz NOT NULL DEFAULT now())`);
+   await client.query(`CREATE INDEX IF NOT EXISTS whatsapp_clicks_created_at ON ${this.table('whatsapp_clicks')} (created_at)`);
    const applied=await client.query(`SELECT id FROM ${this.table('migrations')} WHERE id=$1`,['001-initial-import']);
    if(!applied.rowCount){
     const count=await client.query(`SELECT count(*)::int AS count FROM ${this.table('vehicles')}`);

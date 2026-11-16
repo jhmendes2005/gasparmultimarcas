@@ -5,6 +5,7 @@ import {randomBytes,scryptSync,timingSafeEqual,randomUUID} from 'node:crypto';
 import {openStore} from './storage.mjs';
 import {createImageStorage,imageType,MAX_IMAGE_BYTES} from './image-storage.mjs';
 import {createImporter} from './woo-import.mjs';
+import {LeadRepository,parseLeadClick,leadRange} from './whatsapp-leads.mjs';
 const root=resolve('dist'),dataDir=resolve(process.env.VERCEL?'/tmp/gaspar-multimarcas':(process.env.DATA_DIR||'.data')),uploadDir=resolve(dataDir,'uploads');
 mkdirSync(uploadDir,{recursive:true});
 if(process.env.NODE_ENV==='production'&&!process.env.DATABASE_URL)throw Error('Configure DATABASE_URL em produção.');
@@ -25,8 +26,20 @@ function ensure(condition,message){if(!condition)throw Object.assign(Error(messa
 const imageUrl=value=>images.acceptsImageUrl(value);
 function vehicle(input,id){const v={id};for(const key of ['brand','name','version','transmission','fuel','category','badge','description']){ensure(typeof(input[key]??'')==='string','Campo de texto inválido.');v[key]=String(input[key]??'').trim();ensure(v[key].length<=(key==='description'?3000:120),'Texto longo demais.')}ensure(v.brand&&v.name&&v.version,'Informe marca, modelo e versão.');for(const key of ['price','year','km']){v[key]=Number(input[key]);ensure(Number.isFinite(v[key]),'Valor numérico inválido.')}ensure(v.price>0&&v.price<100000000,'Preço inválido.');ensure(Number.isInteger(v.year)&&v.year>=1900&&v.year<=new Date().getFullYear()+2,'Ano inválido.');ensure(Number.isInteger(v.km)&&v.km>=0&&v.km<=3000000,'Quilometragem inválida.');ensure(['Hatch','SUV','Sedã','Monovolume','Picape','Perua','Cupê','Outro'].includes(v.category),'Categoria inválida.');ensure(['Automático','Manual','Automatizado','CVT'].includes(v.transmission),'Câmbio inválido.');ensure(Array.isArray(input.images)&&input.images.length>0&&input.images.length<=20&&input.images.every(imageUrl),'Adicione de 1 a 20 fotos válidas.');v.images=input.images;return v}
 const importer=createImporter({store,images,validate:vehicle});
+const leads=new LeadRepository(store);
 export async function handler(req,res){res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');res.setHeader('X-Frame-Options','SAMEORIGIN');
 try{const url=new URL(req.url,'http://localhost'),path=url.pathname;const method=req.method;
+if(path==='/whatsapp'&&['GET','HEAD'].includes(method)){
+ const {event,destination}=parseLeadClick(url.searchParams);
+ const preview=/prefetch|prerender/i.test(String(req.headers['sec-purpose']||req.headers.purpose||''));
+ const bot=/bot|crawler|spider|facebookexternalhit|preview/i.test(String(req.headers['user-agent']||''));
+ const nonNavigation=!!req.headers['sec-fetch-dest']&&req.headers['sec-fetch-dest']!=='document';
+ const crossSite=req.headers['sec-fetch-site']==='cross-site';
+ if(method==='GET'&&!preview&&!bot&&!nonNavigation&&!crossSite){
+  try{if(event.vehicleId){const car=await store.getVehicle(event.vehicleId);if(car)event.vehicleLabel=`${car.brand} ${car.name} ${car.version} · ${car.year}`}await leads.record(event)}catch{console.error('Não foi possível registrar o clique do WhatsApp. O atendimento foi mantido.')}
+ }
+ res.writeHead(302,{'Location':destination,'Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex, nofollow'});return res.end();
+}
 if(path.startsWith('/api/')){
  if(!['GET','HEAD'].includes(method)){const origin=req.headers.origin;const allowed=process.env.APP_ORIGIN;if(origin){ensure(allowed?origin===allowed:new URL(origin).host===req.headers.host,'Origem não autorizada.')}if(req.headers['sec-fetch-site']==='cross-site')return json(res,403,{error:'Origem não autorizada.'})}
  if(path==='/api/vehicles'&&method==='GET')return json(res,200,await store.listVehicles());
@@ -34,6 +47,7 @@ if(path.startsWith('/api/')){
  if(path==='/api/admin/login'&&method==='POST'){const key=req.socket.remoteAddress;const attempt=attempts.get(key);if(attempt&&attempt.until>Date.now()&&attempt.count>=8)return json(res,429,{error:'Muitas tentativas. Tente novamente em 15 minutos.'});const input=await payload(req);ensure(typeof input.password==='string'&&input.password.length<=300,'Senha inválida.');const candidate=scryptSync(input.password,salt,64);if(!timingSafeEqual(candidate,passwordHash)){const prev=attempt&&attempt.until>Date.now()?attempt:{count:0,until:Date.now()+900000};prev.count++;attempts.set(key,prev);return json(res,401,{error:'Senha incorreta.'})}attempts.delete(key);const token=randomBytes(32).toString('hex');await store.createSession(token,Date.now()+8*3600000);res.setHeader('Set-Cookie',`gaspar_admin=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${production?'; Secure':''}`);return json(res,200,{ok:true})}
  const token=req.headers.cookie?.split(';').map(s=>s.trim()).find(s=>s.startsWith('gaspar_admin='))?.split('=')[1];const expires=await store.getSession(token);if(!expires||expires<Date.now())return json(res,401,{error:'Faça login para continuar.'});
  if(path==='/api/admin/session'&&method==='GET')return json(res,200,{ok:true,storage:images.provider,bucketConfigured:images.cloudConfigured,database:store.kind});
+ if(path==='/api/admin/leads'&&method==='GET')return json(res,200,await leads.report(leadRange(url.searchParams)));
  if(path==='/api/admin/imports'&&method==='GET')return json(res,200,await importer.latest());
  if(path==='/api/admin/imports'&&method==='POST'){const input=await payload(req,1500000);return json(res,201,await importer.preview(input.csv,input.filename))}
  const importRoute=path.match(/^\/api\/admin\/imports\/([a-f0-9-]{36})\/(start|step)$/);

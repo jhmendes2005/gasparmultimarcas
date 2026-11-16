@@ -81,6 +81,16 @@ No painel, abra **Integrações e pixels** e informe `GTM-...` e/ou o ID numéri
 
 Eventos do dataLayer: `search_inventory`, `view_vehicle`, `compare_vehicles` e `generate_lead`. Configure as tags correspondentes no GTM. A integração direta do Meta dispara `PageView`. Evite configurar o mesmo pixel nos dois lugares.
 
+## Relatório de WhatsApp
+
+Em `/admin`, a aba **Leads e WhatsApp** mostra total de cliques, quantidade e participação de cada um dos três números, origem do botão, veículos de interesse e os 50 registros mais recentes do período. Há atalhos para hoje, sete dias, trinta dias e todo o histórico, além de intervalo personalizado. Datas e agrupamentos usam `America/Sao_Paulo`.
+
+Todos os links passam pelo redirecionamento `/whatsapp` antes de abrir `wa.me`. O JavaScript mantém o sorteio e a mensagem do veículo, acrescentando um UUID por clique. O destino é limitado aos números da loja. Links estáticos também passam pelo redirecionamento quando JavaScript não estiver disponível; nesse caso os botões de sorteio usam seu destinatário padrão. O banco deduplica tentativas com o mesmo UUID. Requisições HEAD, pré-carregamentos, robôs identificáveis e sub-recursos não entram na contagem. Se a gravação falhar, o redirecionamento para o atendimento continua.
+
+Os registros persistem na tabela privada `whatsapp_clicks` do Neon. O relatório exige a sessão administrativa. A tabela guarda apenas identificador do evento, data/hora, número comercial escolhido, posição do botão, página e identificação/nome do veículo; não guarda mensagem, nome, telefone ou IP do visitante. Execute `npm run db:migrate` antes de publicar a versão.
+
+A contagem começa na ativação desta funcionalidade; cliques anteriores não são reconstruídos. Os dados medem aberturas do WhatsApp e podem incluir mais de um clique da mesma pessoa. Não confirmam o envio de mensagens nem a conversão em vendas.
+
 ## Publicação
 
 A aplicação está na raiz do repositório. O projeto Vercel `gasparmultimarcas` está conectado ao GitHub: pushes na `main` publicam produção; outras branches geram previews.
