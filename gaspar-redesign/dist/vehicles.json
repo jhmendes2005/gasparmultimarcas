@@ -1,8 +1,110 @@
 [
- {"id":"polo","brand":"Volkswagen","name":"Polo","version":"Comfortline 1.0 TSI","year":2025,"km":38000,"transmission":"Automático","fuel":"Consultar","category":"Hatch","price":99900,"badge":"DESTAQUE","images":["assets/car-1-0.png","assets/car-1-1.png","assets/car-1-2.png"],"source":"https://gasparmultimarcas.com.br/produto/volkswagen-polo-confortiline-1-0-ano-2025/"},
- {"id":"hrv","brand":"Honda","name":"HR-V","version":"EXL Sensing 1.5","year":2023,"km":77000,"transmission":"Automático","fuel":"Flex","category":"SUV","price":134900,"badge":"PARA NOVOS CAMINHOS","images":["assets/car-3-0.png","assets/car-3-1.png","assets/car-3-2.png"],"source":"https://gasparmultimarcas.com.br/produto/honda-hrv-exl-sensing-1-5-2023/"},
- {"id":"bmw","brand":"BMW","name":"320i","version":"Active 2.0 Turbo","year":2015,"km":116000,"transmission":"Automático","fuel":"Gasolina","category":"Sedã","price":99500,"badge":"SELEÇÃO GASPAR","images":["assets/car-0-0.png","assets/car-0-1.png","assets/car-0-2.png"],"source":"https://gasparmultimarcas.com.br/produto/bmw-320i-active-2-0-turbo-ano-2015/"},
- {"id":"city","brand":"Honda","name":"City Hatchback","version":"Touring 1.5","year":2022,"km":91000,"transmission":"Automático","fuel":"Flex","category":"Hatch","price":99900,"badge":"SEU PRÓXIMO HATCH","images":["assets/car-2-0.png","assets/car-2-1.png","assets/car-2-2.png"],"source":"https://gasparmultimarcas.com.br/produto/honda-city-hatchback-touring-1-5-ano-2022/"},
- {"id":"kwid","brand":"Renault","name":"Kwid","version":"Zen 1.0","year":2024,"km":65000,"transmission":"Manual","fuel":"Consultar","category":"Hatch","price":58500,"badge":"ATÉ R$ 60 MIL","images":["assets/car-4-0.png","assets/car-4-1.png","assets/car-4-2.png"],"source":"https://gasparmultimarcas.com.br/produto/renault-kwid-zen-1-0-ano-2024/"},
- {"id":"meriva","brand":"Chevrolet","name":"Meriva","version":"Easytronic","year":2011,"km":175000,"transmission":"Automatizado","fuel":"Consultar","category":"Monovolume","price":34500,"badge":"ESPAÇO PARA SUA VIDA","images":["assets/car-5-0.png","assets/car-5-1.png","assets/car-5-2.png"],"source":"https://gasparmultimarcas.com.br/produto/chevrolet-meriva-easy-tronic-ano-2011/"}
+  {
+    "id": "polo",
+    "brand": "Volkswagen",
+    "name": "Polo",
+    "version": "Comfortline 1.0 TSI",
+    "year": 2025,
+    "km": 38000,
+    "transmission": "Automático",
+    "fuel": "Consultar",
+    "category": "Hatch",
+    "price": 99900,
+    "badge": "DESTAQUE",
+    "images": [
+      "assets/car-1-0.png",
+      "assets/car-1-1.png",
+      "assets/car-1-2.png"
+    ]
+  },
+  {
+    "id": "hrv",
+    "brand": "Honda",
+    "name": "HR-V",
+    "version": "EXL Sensing 1.5",
+    "year": 2023,
+    "km": 77000,
+    "transmission": "Automático",
+    "fuel": "Flex",
+    "category": "SUV",
+    "price": 134900,
+    "badge": "PARA NOVOS CAMINHOS",
+    "images": [
+      "assets/car-3-0.png",
+      "assets/car-3-1.png",
+      "assets/car-3-2.png"
+    ]
+  },
+  {
+    "id": "bmw",
+    "brand": "BMW",
+    "name": "320i",
+    "version": "Active 2.0 Turbo",
+    "year": 2015,
+    "km": 116000,
+    "transmission": "Automático",
+    "fuel": "Gasolina",
+    "category": "Sedã",
+    "price": 99500,
+    "badge": "SELEÇÃO GASPAR",
+    "images": [
+      "assets/car-0-0.png",
+      "assets/car-0-1.png",
+      "assets/car-0-2.png"
+    ]
+  },
+  {
+    "id": "city",
+    "brand": "Honda",
+    "name": "City Hatchback",
+    "version": "Touring 1.5",
+    "year": 2022,
+    "km": 91000,
+    "transmission": "Automático",
+    "fuel": "Flex",
+    "category": "Hatch",
+    "price": 99900,
+    "badge": "SEU PRÓXIMO HATCH",
+    "images": [
+      "assets/car-2-0.png",
+      "assets/car-2-1.png",
+      "assets/car-2-2.png"
+    ]
+  },
+  {
+    "id": "kwid",
+    "brand": "Renault",
+    "name": "Kwid",
+    "version": "Zen 1.0",
+    "year": 2024,
+    "km": 65000,
+    "transmission": "Manual",
+    "fuel": "Consultar",
+    "category": "Hatch",
+    "price": 58500,
+    "badge": "ATÉ R$ 60 MIL",
+    "images": [
+      "assets/car-4-0.png",
+      "assets/car-4-1.png",
+      "assets/car-4-2.png"
+    ]
+  },
+  {
+    "id": "meriva",
+    "brand": "Chevrolet",
+    "name": "Meriva",
+    "version": "Easytronic",
+    "year": 2011,
+    "km": 175000,
+    "transmission": "Automatizado",
+    "fuel": "Consultar",
+    "category": "Monovolume",
+    "price": 34500,
+    "badge": "ESPAÇO PARA SUA VIDA",
+    "images": [
+      "assets/car-5-0.png",
+      "assets/car-5-1.png",
+      "assets/car-5-2.png"
+    ]
+  }
 ]

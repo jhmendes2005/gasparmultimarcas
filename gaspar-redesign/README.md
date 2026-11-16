@@ -1,6 +1,6 @@
 # Gaspar Multimarcas
 
-Redesign independente baseado no site público https://gasparmultimarcas.com.br/. Fotos e informações dos seis anúncios foram consultadas em 16/11/2026; confirmar disponibilidade e preço com a loja. A foto principal é ilustrativa (Unsplash). A identidade usa vermelho e a logo original, extraída diretamente de https://gasparmultimarcas.com.br/wp-content/uploads/2024/11/Design-sem-nome-1.png, sem redesenho ou alteração do arquivo.
+Site da Gaspar Multimarcas com identidade vermelha, catálogo de veículos e painel de administração. A foto principal é ilustrativa (Unsplash).
 
 ## Executar
 
@@ -22,7 +22,8 @@ Na primeira execução local, uma senha aleatória é criada em `.data/admin-pas
 - Filtros preservados na URL, seleção de comparação entre páginas, títulos individuais e página 404.
 - Favoritos no navegador e comparação de até três veículos.
 - Sugestões por orçamento, câmbio e perfil de uso.
-- Contato pelo WhatsApp com o veículo selecionado.
+- Contato pelo WhatsApp com o veículo selecionado e sorteio entre os três números da loja a cada clique nos botões gerais.
+- Os três números ficam visíveis; links de um número específico abrem diretamente aquele contato.
 - Painel autenticado para cadastrar, editar e remover veículos.
 - Upload múltiplo de JPG, PNG e WebP (8 MB/foto, até 20 fotos), ordenação e escolha da capa.
 - Persistência de veículos e configurações em `.data/database.json` com gravação atômica.

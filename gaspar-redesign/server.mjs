@@ -8,6 +8,8 @@ const dbFile=resolve(dataDir,'database.json');
 const saveDb=()=>{writeFileSync(dbFile+'.tmp',JSON.stringify(db,null,2));renameSync(dbFile+'.tmp',dbFile)};
 let db=existsSync(dbFile)?JSON.parse(readFileSync(dbFile,'utf8')):{vehicles:JSON.parse(readFileSync(resolve(root,'vehicles.json'),'utf8')),settings:{gtmId:'',metaPixelId:''}};
 if(!existsSync(dbFile))saveDb();
+// Mantém apenas os dados de anúncio utilizados pelo catálogo da loja.
+if(db.vehicles.some(car=>'source' in car)){for(const car of db.vehicles)delete car.source;saveDb();}
 let password=process.env.ADMIN_PASSWORD;
 if(!password){if(process.env.NODE_ENV==='production')throw Error('Configure ADMIN_PASSWORD antes de iniciar em produção.');const pwFile=resolve(dataDir,'admin-password.txt');password=existsSync(pwFile)?readFileSync(pwFile,'utf8').trim():randomBytes(18).toString('base64url');if(!existsSync(pwFile))writeFileSync(pwFile,password,{mode:0o600});console.log('Senha administrativa local disponível em .data/admin-password.txt');}
 if(password.length<12)throw Error('ADMIN_PASSWORD precisa de pelo menos 12 caracteres.');
