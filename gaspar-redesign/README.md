@@ -1,6 +1,6 @@
 # Gaspar Multimarcas
 
-Redesign independente baseado no site público https://gasparmultimarcas.com.br/. Fotos e informações dos seis anúncios foram consultadas em 16/11/2026; confirmar disponibilidade e preço com a loja. A foto principal é ilustrativa (Unsplash).
+Redesign independente baseado no site público https://gasparmultimarcas.com.br/. Fotos e informações dos seis anúncios foram consultadas em 16/11/2026; confirmar disponibilidade e preço com a loja. A foto principal é ilustrativa (Unsplash). A identidade usa vermelho e a logo original, extraída diretamente de https://gasparmultimarcas.com.br/wp-content/uploads/2024/11/Design-sem-nome-1.png, sem redesenho ou alteração do arquivo.
 
 ## Executar
 
