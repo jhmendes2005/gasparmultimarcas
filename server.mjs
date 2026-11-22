@@ -1,7 +1,7 @@
 import {createServer} from 'node:http';
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {resolve,extname,sep} from 'node:path';
-import {randomBytes,scryptSync,timingSafeEqual,randomUUID} from 'node:crypto';
+import {randomBytes,scryptSync,timingSafeEqual,randomUUID,createHash,createHmac} from 'node:crypto';
 import {openStore} from './storage.mjs';
 import {createImageStorage,imageType,MAX_IMAGE_BYTES} from './image-storage.mjs';
 import {createImporter} from './woo-import.mjs';
@@ -15,7 +15,12 @@ let store;
 try{store=await openStore({dataDir,seed})}catch(error){console.error('Banco indisponível. Verifique DATABASE_URL e execute npm run db:migrate. Código:',error.code||error.name);process.exit(1)}
 let password=process.env.ADMIN_PASSWORD;
 if(!password){if(process.env.NODE_ENV==='production')throw Error('Configure ADMIN_PASSWORD antes de iniciar em produção.');const pwFile=resolve(dataDir,'admin-password.txt');password=existsSync(pwFile)?readFileSync(pwFile,'utf8').trim():randomBytes(18).toString('base64url');if(!existsSync(pwFile))writeFileSync(pwFile,password,{mode:0o600});console.log('Senha administrativa local disponível em .data/admin-password.txt');}
-if(password.length<12)throw Error('ADMIN_PASSWORD precisa de pelo menos 12 caracteres.');
+if(password.length<10)throw Error('ADMIN_PASSWORD precisa de pelo menos 10 caracteres.');
+const adminEmail=(process.env.ADMIN_EMAIL||'admin@localhost').trim().toLowerCase();
+if(process.env.NODE_ENV==='production'&&!process.env.ADMIN_EMAIL)throw Error('Configure ADMIN_EMAIL em produção.');
+const emailHash=createHash('sha256').update(adminEmail).digest();
+const sessionKey=createHash('sha256').update(adminEmail).update('\0').update(password).digest();
+const sessionToken=token=>typeof token==='string'&&/^[a-f0-9]{64}$/.test(token)?createHmac('sha256',sessionKey).update(token).digest('hex'):undefined;
 const salt=randomBytes(16),passwordHash=scryptSync(password,salt,64);password=undefined;
 const attempts=new Map();const production=process.env.NODE_ENV==='production';
 const images=createImageStorage({uploadDir});
@@ -58,15 +63,15 @@ if(path.startsWith('/api/')){
  if(!['GET','HEAD'].includes(method)){const origin=req.headers.origin;const allowed=process.env.APP_ORIGIN;if(origin){ensure(allowed?origin===allowed:new URL(origin).host===req.headers.host,'Origem não autorizada.')}if(req.headers['sec-fetch-site']==='cross-site')return json(res,403,{error:'Origem não autorizada.'})}
  if(path==='/api/vehicles'&&method==='GET')return json(res,200,await store.listVehicles());
  if(path==='/api/settings'&&method==='GET')return json(res,200,await store.getSettings());
- if(path==='/api/admin/login'&&method==='POST'){const key=req.socket.remoteAddress;const attempt=attempts.get(key);if(attempt&&attempt.until>Date.now()&&attempt.count>=8)return json(res,429,{error:'Muitas tentativas. Tente novamente em 15 minutos.'});const input=await payload(req);ensure(typeof input.password==='string'&&input.password.length<=300,'Senha inválida.');const candidate=scryptSync(input.password,salt,64);if(!timingSafeEqual(candidate,passwordHash)){const prev=attempt&&attempt.until>Date.now()?attempt:{count:0,until:Date.now()+900000};prev.count++;attempts.set(key,prev);return json(res,401,{error:'Senha incorreta.'})}attempts.delete(key);const token=randomBytes(32).toString('hex');await store.createSession(token,Date.now()+8*3600000);res.setHeader('Set-Cookie',`gaspar_admin=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${production?'; Secure':''}`);return json(res,200,{ok:true})}
- const token=req.headers.cookie?.split(';').map(s=>s.trim()).find(s=>s.startsWith('gaspar_admin='))?.split('=')[1];const expires=await store.getSession(token);if(!expires||expires<Date.now())return json(res,401,{error:'Faça login para continuar.'});
+ if(path==='/api/admin/login'&&method==='POST'){const key=req.socket.remoteAddress;const attempt=attempts.get(key);if(attempt&&attempt.until>Date.now()&&attempt.count>=8)return json(res,429,{error:'Muitas tentativas. Tente novamente em 15 minutos.'});const input=await payload(req);ensure(typeof input.password==='string'&&input.password.length<=300,'Credenciais inválidas.');const candidate=scryptSync(input.password,salt,64);const candidateEmail=createHash('sha256').update(typeof input.email==='string'?input.email.slice(0,254).trim().toLowerCase():'').digest();const validPassword=timingSafeEqual(candidate,passwordHash),validEmail=timingSafeEqual(candidateEmail,emailHash);if(!validPassword||!validEmail){const prev=attempt&&attempt.until>Date.now()?attempt:{count:0,until:Date.now()+900000};prev.count++;attempts.set(key,prev);return json(res,401,{error:'E-mail ou senha incorretos.'})}attempts.delete(key);const token=randomBytes(32).toString('hex');await store.createSession(sessionToken(token),Date.now()+8*3600000);res.setHeader('Set-Cookie',`gaspar_admin=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${production?'; Secure':''}`);return json(res,200,{ok:true})}
+ const token=req.headers.cookie?.split(';').map(s=>s.trim()).find(s=>s.startsWith('gaspar_admin='))?.split('=')[1];const expires=await store.getSession(sessionToken(token));if(!expires||expires<Date.now())return json(res,401,{error:'Faça login para continuar.'});
  if(path==='/api/admin/session'&&method==='GET')return json(res,200,{ok:true,storage:images.provider,bucketConfigured:images.cloudConfigured,database:store.kind});
  if(path==='/api/admin/leads'&&method==='GET')return json(res,200,await leads.report(leadRange(url.searchParams)));
  if(path==='/api/admin/imports'&&method==='GET')return json(res,200,await importer.latest());
  if(path==='/api/admin/imports'&&method==='POST'){const input=await payload(req,1500000);return json(res,201,await importer.preview(input.csv,input.filename))}
  const importRoute=path.match(/^\/api\/admin\/imports\/([a-f0-9-]{36})\/(start|step)$/);
  if(importRoute&&method==='POST'){const input=await payload(req,1500000);return json(res,200,importRoute[2]==='start'?await importer.review(importRoute[1],input.rows):await importer.step(importRoute[1]))}
- if(path==='/api/admin/logout'&&method==='POST'){await store.deleteSession(token);res.setHeader('Set-Cookie','gaspar_admin=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');return json(res,200,{ok:true})}
+ if(path==='/api/admin/logout'&&method==='POST'){await store.deleteSession(sessionToken(token));res.setHeader('Set-Cookie','gaspar_admin=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');return json(res,200,{ok:true})}
  if(path==='/api/admin/blob-upload'&&method==='POST')return json(res,200,await images.createUploadToken(req,await payload(req)));
  if(path==='/api/admin/blob-confirm'&&method==='POST'){const input=await payload(req);return json(res,200,await images.confirmImage(input.url))}
  if(path==='/api/admin/upload'&&method==='POST'){const data=await body(req,MAX_IMAGE_BYTES);const type=imageType(data);ensure(type,'Envie uma imagem JPG, PNG ou WebP.');return json(res,201,{url:await images.saveImage(data,type),storage:images.provider})}

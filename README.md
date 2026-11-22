@@ -97,7 +97,7 @@ A aplicação está na raiz do repositório. O projeto Vercel `gasparmultimarcas
 
 A configuração `vercel.json` publica os arquivos de `dist` e encaminha as rotas dinâmicas ao adaptador `api/index.js`. A função usa PostgreSQL / Neon e Vercel Blob; arquivos temporários ficam em `/tmp`.
 
-Configure `DATABASE_URL`, `ADMIN_PASSWORD`, `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` e `BLOB_PUBLIC_URL` nas variáveis da Vercel. As três primeiras devem ser segredos. `APP_ORIGIN` é opcional; sem ela, a validação de origem exige o mesmo host da solicitação, permitindo os domínios de preview da própria implantação.
+Configure `DATABASE_URL`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` e `BLOB_PUBLIC_URL` nas variáveis da Vercel. `DATABASE_URL`, `ADMIN_PASSWORD` e `BLOB_READ_WRITE_TOKEN` devem ser segredos. `APP_ORIGIN` é opcional; sem ela, a validação de origem exige o mesmo host da solicitação, permitindo os domínios de preview da própria implantação.
 
 Produção deve usar HTTPS, `NODE_ENV=production` e senha administrativa forte. As sessões e os anúncios podem ser compartilhados entre instâncias pelo PostgreSQL; o limitador de tentativas de login ainda é por processo e deve ser complementado na entrada da aplicação em uma implantação distribuída.
 
@@ -138,3 +138,5 @@ Para acompanhar indexação e pesquisas, cadastre o domínio e envie `https://ga
 A camada pública de tipografia, contraste e cores está em `dist/vitality.css`; o painel administrativo mantém seus próprios estilos. Ela amplia os títulos, textos, botões e preços, com ajustes para celular e tablet.
 
 Os perfis oficiais informados pela loja ficam em `dist/social-links.js`. O servidor renderiza Instagram e Facebook no cabeçalho e no rodapé de todas as páginas públicas, além da página de contato. Os mesmos links alimentam o `sameAs` da loja nos dados estruturados. Ícones SVG locais evitam carregar widgets e scripts de redes sociais. Edite esse arquivo para atualizar os destinos.
+
+O painel em `/admin` exige o e-mail definido em `ADMIN_EMAIL` e a senha de `ADMIN_PASSWORD` (mínimo de 10 caracteres). Alterar essas credenciais invalida as sessões anteriores.
