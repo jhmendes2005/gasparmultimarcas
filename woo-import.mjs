@@ -57,7 +57,8 @@ export function parseWooCsv(csv,existing=[],links={}){
   const price=numberValue(r.preco||r.preconormal||r.regularprice);if(r.precopromocional)warnings.push('Preço promocional ignorado; usando preço regular.');
   let sources=[];try{sources=[...new Set(String(r.imagens||'').split(',').map(s=>s.trim()).filter(Boolean).map(sourceImage))]}catch(e){warnings.push(e.message)}
   if(sources.length>20)warnings.push('Mais de 20 fotos: ajuste o CSV para preservar todas as imagens.');
-  const candidate={brand,name,version,year,km,price,transmission,fuel,category:categoryFor(name),badge:'',description:plainText(r.descricao||r.descricaocurta),images:[]};
+  const features=[...new Set(Object.entries(attributes).filter(([key])=>/^(opcionais|equipamentos|acessorios|itensdeserie)$/.test(key)).flatMap(([,value])=>plainText(value).split(/[,;|\n]/).map(item=>item.trim()).filter(Boolean)))];
+  const candidate={brand,name,version,year,km,price,transmission,fuel,features,category:categoryFor(name),badge:'',description:plainText(r.descricao||r.descricaocurta),images:[]};
   const matches=existing.filter(c=>norm(c.brand)===norm(brand)&&norm(c.name)===norm(name)&&c.year===year&&c.km===km);
   const targetId=links[sourceKey]||(matches.length===1?matches[0].id:null);
   if(candidate.category==='Outro')warnings.push('Categoria não reconhecida; revisar.');

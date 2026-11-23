@@ -85,3 +85,5 @@ body:has(.compare-bar:not([hidden])) .site-footer{padding-bottom:70px}body:has(.
  .search-panel label{min-width:0}
  .search-panel select{max-width:100%}
 }
+
+.vehicle-features{margin:52px 0;padding:36px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--brand);border-radius:8px}.vehicle-features-heading h2{font-size:clamp(25px,3vw,36px);letter-spacing:-1px;margin:12px 0;line-height:1.25}.vehicle-features-heading p{color:var(--muted);font-size:14px;line-height:1.7}.vehicle-features ul{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 28px;padding:25px 0 0;margin:0}.vehicle-features li{display:flex;align-items:start;gap:10px;font-size:14px;line-height:1.6;overflow-wrap:anywhere}.vehicle-features li>span{color:var(--brand);flex-shrink:0;font-weight:700}@media(max-width:800px){.vehicle-features ul{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.vehicle-features{padding:24px 18px;margin:32px 0}.vehicle-features ul{grid-template-columns:minmax(0,1fr);gap:12px}.vehicle-features li{font-size:14px}}

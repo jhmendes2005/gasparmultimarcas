@@ -2,6 +2,9 @@ import {createServer} from 'node:http';
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {resolve,extname,sep} from 'node:path';
 import {randomBytes,scryptSync,timingSafeEqual,randomUUID,createHash,createHmac} from 'node:crypto';
+import {featureCatalog,featureKey,normalizeFeatures} from './dist/vehicle-features.js';
+import {inventorySnapshot} from './inventory-agent.mjs';
+import {handleInventoryMcp} from './inventory-mcp.mjs';
 import {openStore} from './storage.mjs';
 import {createImageStorage,imageType,MAX_IMAGE_BYTES} from './image-storage.mjs';
 import {createImporter} from './woo-import.mjs';
@@ -30,7 +33,7 @@ async function body(req,limit=100000){const parts=[];let size=0;for await(const 
 async function payload(req,limit){try{return JSON.parse((await body(req,limit)).toString())}catch(e){if(e.status)throw e;throw Object.assign(Error('JSON inválido.'),{status:400})}}
 function ensure(condition,message){if(!condition)throw Object.assign(Error(message),{status:400})}
 const imageUrl=value=>images.acceptsImageUrl(value);
-function vehicle(input,id){const v={id};for(const key of ['brand','name','version','transmission','fuel','category','badge','description']){ensure(typeof(input[key]??'')==='string','Campo de texto inválido.');v[key]=String(input[key]??'').trim();ensure(v[key].length<=(key==='description'?3000:120),'Texto longo demais.')}ensure(v.brand&&v.name&&v.version,'Informe marca, modelo e versão.');for(const key of ['price','year','km']){v[key]=Number(input[key]);ensure(Number.isFinite(v[key]),'Valor numérico inválido.')}ensure(v.price>0&&v.price<100000000,'Preço inválido.');ensure(Number.isInteger(v.year)&&v.year>=1900&&v.year<=new Date().getFullYear()+2,'Ano inválido.');ensure(Number.isInteger(v.km)&&v.km>=0&&v.km<=3000000,'Quilometragem inválida.');ensure(['Hatch','SUV','Sedã','Monovolume','Picape','Perua','Cupê','Outro'].includes(v.category),'Categoria inválida.');ensure(['Automático','Manual','Automatizado','CVT'].includes(v.transmission),'Câmbio inválido.');ensure(Array.isArray(input.images)&&input.images.length>0&&input.images.length<=20&&input.images.every(imageUrl),'Adicione de 1 a 20 fotos válidas.');v.images=input.images;return v}
+function vehicle(input,id){const v={id,features:normalizeFeatures(input.features)};for(const key of ['brand','name','version','transmission','fuel','category','badge','description']){ensure(typeof(input[key]??'')==='string','Campo de texto inválido.');v[key]=String(input[key]??'').trim();ensure(v[key].length<=(key==='description'?3000:120),'Texto longo demais.')}ensure(v.brand&&v.name&&v.version,'Informe marca, modelo e versão.');for(const key of ['price','year','km']){v[key]=Number(input[key]);ensure(Number.isFinite(v[key]),'Valor numérico inválido.')}ensure(v.price>0&&v.price<100000000,'Preço inválido.');ensure(Number.isInteger(v.year)&&v.year>=1900&&v.year<=new Date().getFullYear()+2,'Ano inválido.');ensure(Number.isInteger(v.km)&&v.km>=0&&v.km<=3000000,'Quilometragem inválida.');ensure(['Hatch','SUV','Sedã','Monovolume','Picape','Perua','Cupê','Outro'].includes(v.category),'Categoria inválida.');ensure(['Automático','Manual','Automatizado','CVT'].includes(v.transmission),'Câmbio inválido.');ensure(Array.isArray(input.images)&&input.images.length>0&&input.images.length<=20&&input.images.every(imageUrl),'Adicione de 1 a 20 fotos válidas.');v.images=input.images;return v}
 const importer=createImporter({store,images,validate:vehicle});
 const leads=new LeadRepository(store);
 export async function handler(req,res){res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');res.setHeader('X-Frame-Options','SAMEORIGIN');
@@ -46,6 +49,17 @@ if(['GET','HEAD'].includes(method)){
   const data=path==='/robots.txt'?robotsTxt(indexableHost):sitemapXml(await store.listSitemapVehicles());
   res.writeHead(200,{'Content-Type':path==='/robots.txt'?'text/plain; charset=utf-8':'application/xml; charset=utf-8','Cache-Control':'no-cache'});return res.end(method==='HEAD'?undefined:data);
  }
+}
+if(path==='/estoque.json'&&['GET','HEAD'].includes(method)){
+ const snapshot=await inventorySnapshot(store);res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('ETag','"'+snapshot.revision+'"');
+ res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});return res.end(method==='HEAD'?undefined:JSON.stringify(snapshot));
+}
+if(path==='/mcp'){
+ res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('Cache-Control','no-store');
+ if(req.headers.origin&&new URL(req.headers.origin).host!==req.headers.host)return json(res,403,{error:'Origem não autorizada.'});
+ if(method!=='POST'){res.setHeader('Allow','POST');return json(res,405,{jsonrpc:'2.0',id:null,error:{code:-32000,message:'Use um cliente MCP Streamable HTTP com POST.'}})}
+ if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']||''))return json(res,415,{error:'Use application/json.'});
+ return await handleInventoryMcp(req,res,store,await payload(req,100000));
 }
 if(path==='/whatsapp'&&['GET','HEAD'].includes(method)){
  const {event,destination}=parseLeadClick(url.searchParams);
@@ -65,6 +79,12 @@ if(path.startsWith('/api/')){
  if(path==='/api/settings'&&method==='GET')return json(res,200,await store.getSettings());
  if(path==='/api/admin/login'&&method==='POST'){const key=req.socket.remoteAddress;const attempt=attempts.get(key);if(attempt&&attempt.until>Date.now()&&attempt.count>=8)return json(res,429,{error:'Muitas tentativas. Tente novamente em 15 minutos.'});const input=await payload(req);ensure(typeof input.password==='string'&&input.password.length<=300,'Credenciais inválidas.');const candidate=scryptSync(input.password,salt,64);const candidateEmail=createHash('sha256').update(typeof input.email==='string'?input.email.slice(0,254).trim().toLowerCase():'').digest();const validPassword=timingSafeEqual(candidate,passwordHash),validEmail=timingSafeEqual(candidateEmail,emailHash);if(!validPassword||!validEmail){const prev=attempt&&attempt.until>Date.now()?attempt:{count:0,until:Date.now()+900000};prev.count++;attempts.set(key,prev);return json(res,401,{error:'E-mail ou senha incorretos.'})}attempts.delete(key);const token=randomBytes(32).toString('hex');await store.createSession(sessionToken(token),Date.now()+8*3600000);res.setHeader('Set-Cookie',`gaspar_admin=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${production?'; Secure':''}`);return json(res,200,{ok:true})}
  const token=req.headers.cookie?.split(';').map(s=>s.trim()).find(s=>s.startsWith('gaspar_admin='))?.split('=')[1];const expires=await store.getSession(sessionToken(token));if(!expires||expires<Date.now())return json(res,401,{error:'Faça login para continuar.'});
+ if(path==='/api/admin/features'&&method==='GET')return json(res,200,featureCatalog(await store.listCustomFeatures()));
+ if(path==='/api/admin/features'&&method==='POST'){
+  const input=await payload(req),label=normalizeFeatures([input.label])[0];
+  const existing=featureCatalog().flatMap(group=>group.items).find(item=>featureKey(item)===featureKey(label));
+  return json(res,201,{label:existing||await store.addCustomFeature(label)});
+ }
  if(path==='/api/admin/session'&&method==='GET')return json(res,200,{ok:true,storage:images.provider,bucketConfigured:images.cloudConfigured,database:store.kind});
  if(path==='/api/admin/leads'&&method==='GET')return json(res,200,await leads.report(leadRange(url.searchParams)));
  if(path==='/api/admin/imports'&&method==='GET')return json(res,200,await importer.latest());

@@ -5,7 +5,7 @@ export function normalizeSearch(value){
 
 export function matchesVehicle(vehicle,query){
  const terms=normalizeSearch(query).split(' ').filter(Boolean);
- const text=normalizeSearch([vehicle.brand,vehicle.name,vehicle.version,vehicle.year,vehicle.category,vehicle.transmission,vehicle.fuel].join(' '));
+ const text=normalizeSearch([vehicle.brand,vehicle.name,vehicle.version,vehicle.year,vehicle.category,vehicle.transmission,vehicle.fuel,...(vehicle.features||[])].join(' '));
  const compact=text.replace(/ /g,'');
  return terms.every(term=>text.includes(term)||compact.includes(term));
 }

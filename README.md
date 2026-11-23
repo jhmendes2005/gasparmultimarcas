@@ -140,3 +140,5 @@ A camada pública de tipografia, contraste e cores está em `dist/vitality.css`;
 Os perfis oficiais informados pela loja ficam em `dist/social-links.js`. O servidor renderiza Instagram e Facebook no cabeçalho e no rodapé de todas as páginas públicas, além da página de contato. Os mesmos links alimentam o `sameAs` da loja nos dados estruturados. Ícones SVG locais evitam carregar widgets e scripts de redes sociais. Edite esse arquivo para atualizar os destinos.
 
 O painel em `/admin` exige o e-mail definido em `ADMIN_EMAIL` e a senha de `ADMIN_PASSWORD` (mínimo de 10 caracteres). Alterar essas credenciais invalida as sessões anteriores.
+
+Opcionais por veículo, biblioteca de extras e endpoints JSON/MCP: consulte [a integração para agentes](docs/agent-integration.md).

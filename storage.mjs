@@ -2,6 +2,7 @@ import {readFileSync,writeFileSync,existsSync,renameSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 import pg from 'pg';
+import {featureKey,normalizeFeatures} from './dist/vehicle-features.js';
 
 const sessionHash=token=>createHash('sha256').update(token).digest('hex');
 export function createPool(connectionString){
@@ -30,6 +31,7 @@ export class PostgresStore {
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('migrations')} (id text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now())`);
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('vehicles')} (id text PRIMARY KEY, data jsonb NOT NULL CHECK(jsonb_typeof(data)='object'), created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now())`);
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('settings')} (id integer PRIMARY KEY CHECK(id=1), data jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`);
+   await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('feature_catalog')} (key text PRIMARY KEY, label text NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`);
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('sessions')} (token_hash text PRIMARY KEY, expires_at timestamptz NOT NULL)`);
    await client.query(`CREATE INDEX IF NOT EXISTS sessions_expires_at ON ${this.table('sessions')} (expires_at)`);
    await client.query(`CREATE TABLE IF NOT EXISTS ${this.table('import_jobs')} (id text PRIMARY KEY, data jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`);
@@ -51,6 +53,8 @@ export class PostgresStore {
  async listVehicles(){return (await this.pool.query(`SELECT data FROM ${this.table('vehicles')} ORDER BY created_at DESC,id`)).rows.map(row=>row.data)}
  async listSitemapVehicles(){return (await this.pool.query(`SELECT id,data->'images' AS images,updated_at AS "lastModified" FROM ${this.table('vehicles')} ORDER BY created_at DESC,id`)).rows}
  async getVehicle(id){return (await this.pool.query(`SELECT data FROM ${this.table('vehicles')} WHERE id=$1`,[id])).rows[0]?.data||null}
+ async listCustomFeatures(){return (await this.pool.query(`SELECT label FROM ${this.table('feature_catalog')} ORDER BY label`)).rows.map(row=>row.label)}
+ async addCustomFeature(label){const value=normalizeFeatures([label])[0];return (await this.pool.query(`INSERT INTO ${this.table('feature_catalog')} (key,label) VALUES ($1,$2) ON CONFLICT(key) DO UPDATE SET key=EXCLUDED.key RETURNING label`,[featureKey(value),value])).rows[0].label}
  async createVehicle(car){await this.pool.query(`INSERT INTO ${this.table('vehicles')} (id,data) VALUES ($1,$2::jsonb)`,[car.id,JSON.stringify(car)]);return car}
  async updateVehicle(car){const result=await this.pool.query(`UPDATE ${this.table('vehicles')} SET data=$2::jsonb,updated_at=now() WHERE id=$1`,[car.id,JSON.stringify(car)]);return result.rowCount?car:null}
  async deleteVehicle(id){return !!(await this.pool.query(`DELETE FROM ${this.table('vehicles')} WHERE id=$1`,[id])).rowCount}
@@ -74,6 +78,8 @@ export class LocalStore {
  async listVehicles(){return this.data.vehicles}
  async listSitemapVehicles(){return this.data.vehicles.map(({id,images})=>({id,images}))}
  async getVehicle(id){return this.data.vehicles.find(c=>c.id===id)||null}
+ async listCustomFeatures(){return this.data.featureCatalog||[]}
+ async addCustomFeature(label){const value=normalizeFeatures([label])[0];this.data.featureCatalog||=[];const existing=this.data.featureCatalog.find(item=>featureKey(item)===featureKey(value));if(existing)return existing;this.data.featureCatalog.push(value);this.save();return value}
  async createVehicle(car){this.data.vehicles.unshift(car);this.save();return car}
  async updateVehicle(car){const i=this.data.vehicles.findIndex(c=>c.id===car.id);if(i<0)return null;this.data.vehicles[i]=car;this.save();return car}
  async deleteVehicle(id){const i=this.data.vehicles.findIndex(c=>c.id===id);if(i<0)return false;this.data.vehicles.splice(i,1);this.save();return true}
