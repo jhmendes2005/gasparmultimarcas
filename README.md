@@ -148,3 +148,5 @@ A paleta escura das páginas públicas está em `dist/dark-theme.css`, carregada
 O cabeçalho compacto usa `dist/header-layout.css`: busca na linha da logo, sugestões adaptadas ao celular e redes sociais/favoritos dentro do menu nas telas menores.
 
 Os equipamentos do anúncio são agrupados por categoria em `dist/equipment.css`. Os filtros de opcionais do estoque usam `dist/stock-filters.js` no navegador e no HTML do servidor, mostrando somente itens existentes e contando veículos compatíveis. A URL aceita múltiplos parâmetros `opcional`; todos os itens selecionados são exigidos.
+
+A galeria do anúncio usa `dist/vehicle-gallery.js` e `dist/vehicle-gallery.css`: setas, miniaturas, deslize, modal com zoom de 1× a 4×, arraste, pinça, roda do mouse e teclado. O botão de compartilhar usa o menu nativo, com alternativa para copiar o link canônico ou selecioná-lo manualmente.
