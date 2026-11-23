@@ -1,0 +1,60 @@
+/* Grafite, superfícies em camadas e o vermelho original da Gaspar. */
+body[data-page]{
+ --cream:#101114;--ink:#f4f4f6;--muted:#b7bbc6;--line:#343740;
+ --surface:#1a1c22;--surface-raised:#23262e;--highlight:#ff7b83;
+ color-scheme:dark;background:var(--cream);color:var(--ink);
+}
+body[data-page] :is(header,.header-search){background:#14151a;border-color:var(--line)}
+body[data-page]>header.is-scrolled{border-color:var(--line);box-shadow:0 8px 30px #0005}
+body[data-page] .topbar{background:#96151c}
+body[data-page] .nav nav.open{background:#191b21;box-shadow:0 15px 30px #0007}
+body[data-page] :is(.brand,.car-brand,.benefit-icon,.store-info>span,.closing em){color:var(--highlight)}
+body[data-page] .header-socials a{background:#321c23;border-color:#613039;color:#ff9da4}
+body[data-page] .header-socials a:hover{background:var(--brand);color:white}
+body[data-page] .search-panel{background:var(--surface);border-color:var(--line);box-shadow:0 16px 40px #0005}
+body[data-page] :is(.search-panel label,.sort-label,.sort-label select,.tabs button){color:var(--muted)}
+body[data-page] select option{background:var(--surface);color:var(--ink)}
+body[data-page] .outline{border-color:#626672;color:var(--ink)}
+body[data-page] .text-link{color:var(--ink);border-color:#78515a}
+body[data-page] .text-link:hover{color:var(--highlight);border-color:var(--highlight)}
+body[data-page] .tabs button.selected{background:#3c2028;border-color:#99505b;color:#ffb0b6}
+body[data-page] .vehicle-card{background:var(--surface);border-color:var(--line);box-shadow:0 5px 24px #0002}
+body[data-page] .vehicle-card:hover{border-color:#96505c;box-shadow:0 16px 36px #0006}
+body[data-page] :is(.car-photo,.detail-photo,.vehicle-page .gallery button,.compare-table img,.live-search-results img){background:#24272e}
+body[data-page] :is(.car-version,.car-specs,.compare-label,.inventory-note,.benefits p,.store-copy>p,.store-info p,.page-heading>p,.contact-card p,.contact-card address,.detail-copy p,.privacy-copy p,.gallery-help){color:var(--muted)}
+body[data-page] .car-price{color:#fff}
+body[data-page] .vehicle-page .detail-copy .car-price{color:#ff858c}
+body[data-page] .car-badge{background:#281b21f2;color:#ffc1c6;border:1px solid #80404b}
+body[data-page] .save-car{background:#181a20ed;color:#f4f4f6}
+body[data-page] .save-car.saved{background:#4c222d;color:#ff929c;box-shadow:0 0 0 3px #ff7b831a}
+body[data-page] .detail-arrow{background:#3c2028;color:#ffb0b6}
+body[data-page] .vehicle-card:hover .detail-arrow{background:var(--brand);color:white}
+body[data-page] .store-section{background:#191b20}
+body[data-page] .benefit-number{color:#bc9ba5}
+body[data-page] :is(.contact-card,.quiz-form,.comparison-page .compare-table,.vehicle-features){background:var(--surface);border-color:var(--line)}
+body[data-page] .vehicle-features{border-top-color:var(--brand)}
+body[data-page] .vehicle-features li>span{color:var(--highlight)}
+body[data-page] .detail-specs div{background:#2f2028;color:var(--ink)}
+body[data-page] .detail-specs small{color:#e4b4bf}
+body[data-page] .live-search-form{background:var(--surface-raised);border-color:#444853}
+body[data-page] .live-search-form:focus-within{background:#292c35;border-color:#f5858e;box-shadow:0 0 0 3px #ff7b831a}
+body[data-page] .live-search-form input::placeholder{color:#b2b6c2}
+body[data-page] :is(.search-symbol,.live-search-form>button,.suggestion-heading>span,.live-search-results li a>span:last-child){color:#ff9da4}
+body[data-page] .live-search-results{background:#1c1e25;border-color:#494d59;box-shadow:0 20px 50px #0008}
+body[data-page] .suggestion-heading{border-color:var(--line)}
+body[data-page] .live-search-results strong{color:var(--ink)}
+body[data-page] .live-search-results li small{color:var(--muted)}
+body[data-page] :is(.live-search-results li a:hover,.live-search-results li a:focus-visible){background:#3b222c}
+body[data-page] .suggestion-all{background:#29222b;color:#ffb0b6}
+body[data-page] .suggestion-all>span{color:#c3b7c1}
+body[data-page] .empty-state{border-color:#78515a}
+body[data-page] .cookie-banner{background:#23262e;border-color:#555965;box-shadow:0 8px 30px #0008}
+body[data-page] .site-footer{background:#090a0d}
+body[data-page] .footer-contact-card{background:#1b1d23;border-color:#40434e}
+body[data-page] .footer-contact-card:hover{background:#30212a;border-color:#99505b}
+body[data-page] :is(button,a,input,select,textarea,summary):focus-visible{outline-color:#ff9da4}
+body[data-page] .skip{background:#ff9da4;color:#15161b}
+body[data-page] :is(input[type=checkbox],input[type=radio]){accent-color:#ef4b56}
+@media(prefers-reduced-motion:no-preference){
+ body[data-page] .header-socials a,body[data-page] .live-search-form{transition:background .25s,border-color .25s}
+}

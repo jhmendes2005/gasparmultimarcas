@@ -142,3 +142,5 @@ Os perfis oficiais informados pela loja ficam em `dist/social-links.js`. O servi
 O painel em `/admin` exige o e-mail definido em `ADMIN_EMAIL` e a senha de `ADMIN_PASSWORD` (mínimo de 10 caracteres). Alterar essas credenciais invalida as sessões anteriores.
 
 Opcionais por veículo, biblioteca de extras e endpoints JSON/MCP: consulte [a integração para agentes](docs/agent-integration.md).
+
+A paleta escura das páginas públicas está em `dist/dark-theme.css`, carregada após `vitality.css`. Mantém o vermelho da marca e usa superfícies de grafite com textos claros, incluindo menu mobile, busca, anúncios e opcionais.
