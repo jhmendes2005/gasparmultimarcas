@@ -33,7 +33,7 @@ export function renderSeoPage(template,{path='/',params=new URLSearchParams(),ca
  const filtered=path==='/estoque'&&['marca','preco','categoria','ordem','q','favoritos'].some(key=>params.get(key));
  const noindex=notFound||config.noindex||filtered||!indexableHost;
  const robots=noindex?'noindex,follow':'index,follow,max-image-preview:large';
- const image=car?absolute(car.images[0]):SITE_ORIGIN+'/assets/hero.jpg';
+ const image=car?absolute(car.images[0]):SITE_ORIGIN+(path==='/'?'/assets/banner-gaspar-estoque.jpg':'/assets/hero.jpg');
  const graph=[dealer(),{'@type':'WebSite','@id':SITE_ORIGIN+'/#website',url:SITE_ORIGIN+'/',name:'Gaspar Multimarcas',inLanguage:'pt-BR',publisher:{'@id':SITE_ORIGIN+'/#loja'}},{'@type':car?'ItemPage':path==='/estoque'?'CollectionPage':'WebPage','@id':canonical+'#pagina',url:canonical,name:config.title,description:config.description,inLanguage:'pt-BR',isPartOf:{'@id':SITE_ORIGIN+'/#website'},about:{'@id':SITE_ORIGIN+'/#loja'},...(car?{mainEntity:{'@id':canonical+'#veiculo'}}:{})}];
  if(!notFound&&path!=='/'){
   const crumbs=[{name:'Início',url:SITE_ORIGIN+'/'}];if(car)crumbs.push({name:'Estoque',url:SITE_ORIGIN+'/estoque'});crumbs.push({name:config.name,url:canonical});

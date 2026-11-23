@@ -18,6 +18,9 @@
 
 body:has(.compare-bar:not([hidden])) .site-footer{padding-bottom:70px}body:has(.compare-bar:not([hidden])) .floating-chat{bottom:90px}
 
+/* A arte da loja mantém a proporção completa em qualquer tela. */
+.home-banner{background:#000}.home-banner-link{display:block;max-width:1600px;margin-inline:auto}.home-banner-link>img{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:contain}.home-banner-caption{display:none}.home-banner+.search-wrap{margin-top:28px}.home-banner-link:focus-visible{outline-offset:-5px}@media(max-width:600px){.home-banner-caption{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border-top:1px solid #343740;color:#f4f4f6;font-size:13px;line-height:1.5}.home-banner-caption>span{max-width:170px}.home-banner-caption strong{display:flex;align-items:center;gap:10px;flex-shrink:0;min-height:44px;padding:10px 14px;border-radius:5px;background:#d31920;color:white;font-size:12px}.home-banner+.search-wrap{margin-top:20px}}
+
 /* Fotos e galerias respeitam a largura disponível, sem cortar o veículo. */
 .vehicle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .vehicle-card,.car-body,.detail-copy,.vehicle-media{min-width:0}
