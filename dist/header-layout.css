@@ -1,0 +1,52 @@
+/* Busca na mesma linha da marca; largura flexível, sem faixa adicional. */
+html{scroll-padding-top:110px}
+body[data-page] .nav{position:relative;gap:18px}
+body[data-page] .nav>.live-search-form{flex:1 1 240px;width:auto;min-width:0;max-width:320px;height:44px}
+body[data-page] .nav .live-search-form input{flex:1;width:0;min-width:0;font-size:14px;padding:11px 10px}
+body[data-page] .nav .live-search-form>button{flex-shrink:0;gap:8px;padding:10px 12px;min-height:42px;font-size:12px;border-left-color:var(--line)}
+body[data-page] .nav .search-symbol{padding-left:12px}
+body[data-page] .nav>nav{align-items:center;flex-shrink:0;gap:20px}
+.nav-tools{display:flex;align-items:center;gap:12px}
+.favorites-label{display:none}
+body[data-page] .nav-tools #favorites{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:38px;min-height:44px;padding:5px}
+body[data-page] .nav .header-socials a{width:34px;height:36px;padding:0}
+body[data-page] .nav-tools a:before,body[data-page] .nav-tools a:after{content:none}
+body[data-page] .nav .live-search-results{width:min(560px,calc(100vw - 48px));inset-inline:0 auto}
+@media(max-width:1200px){
+ body[data-page] .nav{gap:14px}
+ body[data-page] .nav>nav{gap:15px;font-size:14px}
+ body[data-page] .nav>.live-search-form{flex-basis:180px}
+ body[data-page] .nav .live-search-form .search-submit-label{display:none}
+ body[data-page] .nav .live-search-form>button{width:42px;justify-content:center;padding:8px}
+ .nav-tools{gap:8px}
+}
+@media(max-width:1100px){
+ body[data-page] .nav>nav{display:none}
+ body[data-page] .nav-actions .whatsapp{display:none}
+ body[data-page] .nav-actions .menu{display:inline-flex;min-width:44px;min-height:44px}
+ body[data-page] .nav>.live-search-form{position:static;flex:1;max-width:520px;margin-left:auto}
+ body[data-page] .nav>nav.open{display:flex;position:absolute;top:92px;inset-inline:0;flex-direction:column;align-items:stretch;gap:0;padding:12px 24px;background:var(--surface);max-height:calc(100dvh - 105px);overflow-y:auto;border:1px solid var(--line);border-radius:0 0 8px 8px;box-shadow:0 15px 30px #0007;z-index:40}
+ body[data-page] .nav>nav.open>a{padding:14px 0}
+ body[data-page] .nav>nav.open>a:before,body[data-page] .nav>nav.open>a:after{bottom:8px}
+ body[data-page] .nav-actions{flex:0 0 auto;margin-left:0}
+ body[data-page] .nav .nav-tools{justify-content:space-between;gap:18px;padding-top:16px;margin-top:8px;border-top:1px solid var(--line)}
+ body[data-page] .nav .favorites-label{display:inline;font-size:13px}
+ body[data-page] .nav .nav-tools .header-socials{display:flex;gap:10px}
+ body[data-page] .nav .nav-tools .header-socials a{width:40px;height:44px}
+ body[data-page] .nav .live-search-results{width:auto;inset-inline:0;top:calc(100% + 5px);max-height:60dvh}
+ html{scroll-padding-top:110px}
+}
+@media(max-width:760px){
+ body[data-page] .nav{height:74px;gap:10px}
+ body[data-page] .nav .logo img{width:52px;height:52px}
+ body[data-page] .nav>nav.open{top:74px}
+ body[data-page] .nav .live-search-form input{font-size:16px;padding:10px 8px}
+ body[data-page] .nav .search-symbol{display:none}
+ body[data-page] .nav-actions #menu{width:44px;min-width:44px;height:44px;padding:10px}
+ body[data-page] .nav .live-search-results{inset-inline:-4px}
+ body[data-page] .nav .live-search-results li a{display:grid;grid-template-columns:50px minmax(0,1fr);gap:4px 10px;padding:12px}
+ body[data-page] .nav .live-search-results img{grid-row:1/3;width:50px;height:45px}
+ body[data-page] .nav .live-search-results li a>span:nth-child(2){min-width:0}
+ body[data-page] .nav .live-search-results b{grid-column:2;font-size:12px}
+ html{scroll-padding-top:95px}
+}

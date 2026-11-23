@@ -144,3 +144,5 @@ O painel em `/admin` exige o e-mail definido em `ADMIN_EMAIL` e a senha de `ADMI
 Opcionais por veículo, biblioteca de extras e endpoints JSON/MCP: consulte [a integração para agentes](docs/agent-integration.md).
 
 A paleta escura das páginas públicas está em `dist/dark-theme.css`, carregada após `vitality.css`. Mantém o vermelho da marca e usa superfícies de grafite com textos claros, incluindo menu mobile, busca, anúncios e opcionais.
+
+O cabeçalho compacto usa `dist/header-layout.css`: busca na linha da logo, sugestões adaptadas ao celular e redes sociais/favoritos dentro do menu nas telas menores.
