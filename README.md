@@ -146,3 +146,5 @@ Opcionais por veículo, biblioteca de extras e endpoints JSON/MCP: consulte [a i
 A paleta escura das páginas públicas está em `dist/dark-theme.css`, carregada após `vitality.css`. Mantém o vermelho da marca e usa superfícies de grafite com textos claros, incluindo menu mobile, busca, anúncios e opcionais.
 
 O cabeçalho compacto usa `dist/header-layout.css`: busca na linha da logo, sugestões adaptadas ao celular e redes sociais/favoritos dentro do menu nas telas menores.
+
+Os equipamentos do anúncio são agrupados por categoria em `dist/equipment.css`. Os filtros de opcionais do estoque usam `dist/stock-filters.js` no navegador e no HTML do servidor, mostrando somente itens existentes e contando veículos compatíveis. A URL aceita múltiplos parâmetros `opcional`; todos os itens selecionados são exigidos.

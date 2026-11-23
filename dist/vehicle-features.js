@@ -43,3 +43,14 @@ export function featureCatalog(custom=[]){
  const known=new Set(featureGroups.flatMap(group=>group.items.map(featureKey)));
  return [...featureGroups,{name:'Opcionais extras da loja',items:custom.map(item=>normalizeFeatures([item])[0]).filter(item=>!known.has(featureKey(item))).sort((a,b)=>a.localeCompare(b,'pt-BR'))}];
 }
+
+export function groupVehicleFeatures(items=[]){
+ const unique=new Map(items.map(label=>[featureKey(label),label]));
+ const result=[];
+ for(const group of featureGroups){
+  const selected=group.items.map(featureKey).filter(key=>unique.has(key)).map(key=>{const label=unique.get(key);unique.delete(key);return label});
+  if(selected.length)result.push({name:group.name,items:selected});
+ }
+ if(unique.size)result.push({name:'Outros equipamentos',items:[...unique.values()].sort((a,b)=>a.localeCompare(b,'pt-BR'))});
+ return result;
+}

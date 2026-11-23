@@ -1,5 +1,5 @@
 import {renderVehicleCards,renderVehicleDetail} from './dist/vehicle-markup.js';
-import {matchesVehicle} from './dist/vehicle-search.js';
+import {matchesStock,renderStockFeatures,renderStockCategories} from './dist/stock-filters.js';
 import {socialProfiles,renderSocialLinks} from './dist/social-links.js';
 
 export const SITE_ORIGIN='https://gasparmultimarcas.com.br';
@@ -20,7 +20,7 @@ const carName=car=>`${car.brand} ${car.name} ${car.version} ${car.year}`.replace
 const money=value=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(value);
 const km=value=>new Intl.NumberFormat('pt-BR').format(value);
 export function filterStock(cars,params){
- let list=cars.filter(c=>(!params.get('marca')||c.brand===params.get('marca'))&&(!params.get('preco')||c.price<=Number(params.get('preco')))&&(!params.get('categoria')||c.category===params.get('categoria'))&&matchesVehicle(c,params.get('q')||''));
+ let list=cars.filter(c=>matchesStock(c,params));
  if(params.get('favoritos')==='1')return [];
  if(params.get('ordem')==='low')list.sort((a,b)=>a.price-b.price);if(params.get('ordem')==='high')list.sort((a,b)=>b.price-a.price);if(params.get('ordem')==='new')list.sort((a,b)=>b.year-a.year);return list;
 }
@@ -30,7 +30,7 @@ export function renderSeoPage(template,{path='/',params=new URLSearchParams(),ca
  const config=notFound?{title:'Página não encontrada | Gaspar Multimarcas',description:'Esta página ou veículo não está disponível. Explore o estoque atual da Gaspar Multimarcas em Gaspar, SC.',name:'Página não encontrada',noindex:true}:car?{title:`${carName(car)}${similar?' · '+km(car.km)+' km':''} em Gaspar | Gaspar Multimarcas`,description:`${carName(car)} por ${money(car.price)}, com ${km(car.km)} km e câmbio ${car.transmission.toLowerCase()}. Veja fotos e detalhes na Gaspar Multimarcas, Gaspar, SC.`,name:carName(car)}:seoPages[path];
  if(!config)throw Error('Página SEO desconhecida.');
  const canonical=SITE_ORIGIN+(car?carPath(car):notFound?'/':path);
- const filtered=path==='/estoque'&&['marca','preco','categoria','ordem','q','favoritos'].some(key=>params.get(key));
+ const filtered=path==='/estoque'&&['marca','preco','categoria','ordem','q','favoritos','opcional'].some(key=>params.get(key));
  const noindex=notFound||config.noindex||filtered||!indexableHost;
  const robots=noindex?'noindex,follow':'index,follow,max-image-preview:large';
  const image=car?absolute(car.images[0]):SITE_ORIGIN+(path==='/'?'/assets/banner-gaspar-estoque.jpg':'/assets/hero.jpg');
@@ -46,6 +46,7 @@ export function renderSeoPage(template,{path='/',params=new URLSearchParams(),ca
  const head=`${notFound?'':`<link rel="canonical" href="${esc(canonical)}">`}<meta name="robots" content="${robots}"><meta property="og:locale" content="pt_BR"><meta property="og:type" content="website"><meta property="og:site_name" content="Gaspar Multimarcas"><meta property="og:title" content="${esc(config.title)}"><meta property="og:description" content="${esc(config.description)}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${esc(image)}"><meta property="og:image:alt" content="${esc(car?carName(car):'Imagem ilustrativa do site da Gaspar Multimarcas')}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(config.title)}"><meta name="twitter:description" content="${esc(config.description)}"><meta name="twitter:image" content="${esc(image)}">${car?`<link rel="preload" as="image" href="${esc(image)}" fetchpriority="high">`:''}<script type="application/ld+json">${safeJson({'@context':'https://schema.org','@graph':notFound?[]:graph})}</script>`;
  html=html.replace('</head>',()=>head+'</head>');
  if(car)html=html.replace('<div id="vehicle-detail" aria-live="polite"><p>Carregando veículo…</p></div>',()=>`<div id="vehicle-detail" aria-live="polite">${renderVehicleDetail(car,cars)}</div>`);
+ if(path==='/estoque'){html=html.replace('<!-- stock:features -->',()=>renderStockFeatures(cars,params));html=html.replace(/(<div class="tabs"[^>]*>)[\s\S]*?<\/div>/,(_,open)=>open+renderStockCategories(cars,params)+'</div>')}
  if(path==='/'||path==='/estoque'){
   const empty=params.get('favoritos')==='1'?'Seus favoritos aparecerão neste navegador.':'Nenhum veículo com esses filtros. Explore outras opções no estoque.';
   html=html.replace('<div id="vehicles" class="vehicle-grid"></div>',()=>`<div id="vehicles" class="vehicle-grid">${list.length?renderVehicleCards(list):`<div class="empty-state"><p>${empty}</p></div>`}</div>`);
